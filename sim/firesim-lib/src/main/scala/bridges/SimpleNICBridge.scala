@@ -34,7 +34,11 @@ class NICBridge(implicit p: Parameters) extends BlackBox with Bridge[HostPortIO[
 object NICBridge {
   def apply(nicIO: NICIOvonly)(implicit p: Parameters): NICBridge = {
     val ep = Module(new NICBridge)
-    ep.io <> nicIO
+    ep.io.out <> nicIO.out
+    nicIO.in <> ep.io.in
+    nicIO.macAddr := ep.io.macAddr
+    nicIO.rlimit := ep.io.rlimit
+    nicIO.pauser := ep.io.pauser
     ep
   }
 }

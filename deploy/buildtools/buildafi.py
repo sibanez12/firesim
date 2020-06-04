@@ -89,6 +89,7 @@ def aws_build(global_build_config, bypass=False):
     with prefix('cd /home/centos/firesim-build/platforms/f1/aws-fpga'), \
          prefix('source hdk_setup.sh'), \
          prefix('export CL_DIR=/home/centos/firesim-build/platforms/f1/aws-fpga/' + remotefpgabuilddir), \
+         prefix('export XILINXD_LICENSE_FILE=2100@han-1.stanford.edu'), \
          prefix('cd $CL_DIR/build/scripts/'), InfoStreamLogger('stdout'), InfoStreamLogger('stderr'):
         run('./aws_build_dcp_from_cl.sh -foreground')
 

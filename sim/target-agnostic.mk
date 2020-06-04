@@ -55,8 +55,7 @@ $(VERILOG) $(HEADER): $(FIRRTL_FILE) $(ANNO_FILE)
 		-ggcp $(PLATFORM_CONFIG_PACKAGE) \
 		-ggcs $(PLATFORM_CONFIG) \
 		-E verilog"
-	grep -sh ^ $(GENERATED_DIR)/firrtl_black_box_resource_files.f | \
-	xargs cat >> $(VERILOG) # Append blackboxes to FPGA wrapper, if any
+	grep -sh ^.*\\.s*v $(GENERATED_DIR)/firrtl_black_box_resource_files.f | xargs cat >> $(VERILOG) # append *.v and *.sv files
 
 ####################################
 # Runtime-Configuration Generation #
@@ -172,6 +171,8 @@ $(fpga_work_dir)/stamp: $(shell find $(board_dir)/cl_firesim -name '*')
 $(fpga_v): $(VERILOG) $(fpga_work_dir)/stamp
 	$(firesim_base_dir)/../scripts/repo_state_summary.sh > $(repo_state)
 	cp -f $< $@
+	# NOTE(sibanez): copy over SDNet netlists
+	cp -f $(GENERATED_DIR)/*.edn $(fpga_work_dir)/design/
 	sed -i "s/\$$random/64'b0/g" $@
 	sed -i "s/\(^ *\)fatal;\( *$$\)/\1fatal(0, \"\");\2/g" $@
 
