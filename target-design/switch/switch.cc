@@ -166,6 +166,7 @@ for (int i = 0; i < NUMPORTS; i++) {
 while (!pqueue.empty()) {
     switchpacket * tsp = pqueue.top().switchpack;
     pqueue.pop();
+    fprintf(stdout, "Packet source MAC is %#lx, %#lx\n", tsp->dat[0], tsp->dat[1]);
     uint16_t send_to_port = get_port_from_flit(tsp->dat[0], 0 /* junk remove arg */);
     //printf("packet for port: %x\n", send_to_port);
     //printf("packet timestamp: %ld\n", tsp->timestamp);

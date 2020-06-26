@@ -64,6 +64,8 @@ uint16_t get_port_from_flit(uint64_t flit, int current_port) {
     uint16_t flit_low = (flit >> 48) & 0xFFFF; // indicates dest
     uint16_t sendport = (__builtin_bswap16(flit_low));
 
+    return 0;
+
     if (is_multicast)
 	return BROADCAST_ADJUSTED;
 
