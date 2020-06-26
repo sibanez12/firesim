@@ -459,7 +459,10 @@ class FireSimSuperNodeServerNode(FireSimServerNode):
 
         num_siblings = self.supernode_get_num_siblings_plus_one()
 
-        all_macs = [self.get_mac_address()] + [self.supernode_get_sibling_mac_address(x) for x in range(1, num_siblings)]
+        all_nic_macs = [self.get_mac_address()] + [self.supernode_get_sibling_mac_address(x) for x in range(1, num_siblings)]
+        all_switch_macs = ["08:55:66:77:88:08"]
+        all_nic_ips = ["10.0.0.1"]
+
         all_rootfses = self.process_qcow2_rootfses([self.get_rootfs_name()] + [self.supernode_get_sibling_rootfs(x) for x in range(1, num_siblings)])
         all_bootbins = [self.get_bootbin_name()] + [self.supernode_get_sibling_bootbin(x) for x in range(1, num_siblings)]
         all_linklatencies = [self.server_link_latency] + [self.supernode_get_sibling_link_latency(x) for x in range(1, num_siblings)]
@@ -470,7 +473,8 @@ class FireSimSuperNodeServerNode(FireSimServerNode):
             all_shmemportnames = [self.uplinks[0].get_global_link_id()] + [self.supernode_get_sibling_shmemportname(x) for x in range(1, num_siblings)]
 
         runcommand = self.server_hardware_config.get_boot_simulation_command(
-            slotno, all_macs, all_rootfses, all_linklatencies, all_maxbws,
+            slotno, all_nic_macs, all_switch_macs, all_nic_ips,
+            all_rootfses, all_linklatencies, all_maxbws,
             self.server_profile_interval, all_bootbins, self.trace_enable,
             self.trace_select, self.trace_start, self.trace_end, self.trace_output_format,
             self.autocounter_readrate, all_shmemportnames, self.zerooutdram)

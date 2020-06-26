@@ -10,6 +10,7 @@
 #include "bridges/tracerv.h"
 #include "bridges/groundtest.h"
 #include "bridges/autocounter.h"
+#include "bridges/lnic.h"
 
 // Golden Gate provided bridge drivers
 #include "bridges/fpga_model.h"
@@ -304,6 +305,41 @@ uint64_t host_mem_offset = -0x80000000LL;
     #ifdef SIMPLENICBRIDGEMODULE_7_PRESENT
     SIMPLENICBRIDGEMODULE_7_substruct_create;
     add_bridge_driver(new simplenic_t(this, args, SIMPLENICBRIDGEMODULE_7_substruct, 7, SIMPLENICBRIDGEMODULE_7_DMA_ADDR));
+    #endif
+#endif
+
+#ifdef LNICBRIDGEMODULE_struct_guard
+    #ifdef LNICBRIDGEMODULE_0_PRESENT
+    LNICBRIDGEMODULE_0_substruct_create;
+    add_bridge_driver(new lnic_t(this, args, LNICBRIDGEMODULE_0_substruct, 0, LNICBRIDGEMODULE_0_DMA_ADDR));
+    #endif
+    #ifdef LNICBRIDGEMODULE_1_PRESENT
+    LNICBRIDGEMODULE_1_substruct_create;
+    add_bridge_driver(new lnic_t(this, args, LNICBRIDGEMODULE_1_substruct, 1, LNICBRIDGEMODULE_1_DMA_ADDR));
+    #endif
+    #ifdef LNICBRIDGEMODULE_2_PRESENT
+    LNICBRIDGEMODULE_2_substruct_create;
+    add_bridge_driver(new lnic_t(this, args, LNICBRIDGEMODULE_2_substruct, 2, LNICBRIDGEMODULE_2_DMA_ADDR));
+    #endif
+    #ifdef LNICBRIDGEMODULE_3_PRESENT
+    LNICBRIDGEMODULE_3_substruct_create;
+    add_bridge_driver(new lnic_t(this, args, LNICBRIDGEMODULE_3_substruct, 3, LNICBRIDGEMODULE_3_DMA_ADDR));
+    #endif
+    #ifdef LNICBRIDGEMODULE_4_PRESENT
+    LNICBRIDGEMODULE_4_substruct_create;
+    add_bridge_driver(new lnic_t(this, args, LNICBRIDGEMODULE_4_substruct, 4, LNICBRIDGEMODULE_4_DMA_ADDR));
+    #endif
+    #ifdef LNICBRIDGEMODULE_5_PRESENT
+    LNICBRIDGEMODULE_5_substruct_create;
+    add_bridge_driver(new lnic_t(this, args, LNICBRIDGEMODULE_5_substruct, 5, LNICBRIDGEMODULE_5_DMA_ADDR));
+    #endif
+    #ifdef LNICBRIDGEMODULE_6_PRESENT
+    LNICBRIDGEMODULE_6_substruct_create;
+    add_bridge_driver(new lnic_t(this, args, LNICBRIDGEMODULE_6_substruct, 6, LNICBRIDGEMODULE_6_DMA_ADDR));
+    #endif
+    #ifdef LNICBRIDGEMODULE_7_PRESENT
+    LNICBRIDGEMODULE_7_substruct_create;
+    add_bridge_driver(new lnic_t(this, args, LNICBRIDGEMODULE_7_substruct, 7, LNICBRIDGEMODULE_7_DMA_ADDR));
     #endif
 #endif
 

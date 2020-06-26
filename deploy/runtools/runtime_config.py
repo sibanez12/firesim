@@ -87,7 +87,8 @@ class RuntimeHWConfig:
         assert_def_local = gen_src_dir + self.get_design_name() + ".asserts"
         return assert_def_local
 
-    def get_boot_simulation_command(self, slotid, all_macs,
+    def get_boot_simulation_command(self, slotid, all_nic_macs,
+                                              all_switch_macs, all_nic_ips,
                                               all_rootfses, all_linklatencies,
                                               all_netbws, profile_interval,
                                               all_bootbinaries, trace_enable,
@@ -122,13 +123,16 @@ class RuntimeHWConfig:
                      for (i, val) in enumerate(values)]
             return array_to_plusargs(names, "+" + prefix)
 
-        command_macs = array_to_plusargs(all_macs, "+macaddr")
+        command_nic_macs = array_to_plusargs(all_nic_macs, "+nic_mac_addr")
+        command_switch_macs = array_to_plusargs(all_switch_macs, "+switch_mac_addr")
+        command_nic_ips = array_to_plusargs(all_nic_ips, "+nic_ip_addr")
+
         command_rootfses = array_to_plusargs(all_rootfses, "+blkdev")
         command_linklatencies = array_to_plusargs(all_linklatencies, "+linklatency")
         command_netbws = array_to_plusargs(all_netbws, "+netbw")
         command_shmemportnames = array_to_plusargs(all_shmemportnames, "+shmemportname")
 
-        command_niclogs = array_to_lognames(all_macs, "niclog")
+        command_niclogs = array_to_lognames(all_nic_macs, "niclog")
         command_blkdev_logs = array_to_lognames(all_rootfses, "blkdev-log")
 
         command_bootbinaries = array_to_plusargs(all_bootbinaries, "+prog")
@@ -138,9 +142,11 @@ class RuntimeHWConfig:
         dwarf_file_name = "+dwarf-file-name0=" + all_bootbinaries[0] + "-dwarf"
 
         # TODO: supernode support (tracefile0, trace-select0.. etc)
-        basecommand = """screen -S fsim{slotid} -d -m bash -c "script -f -c 'stty intr ^] && sudo sudo LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH ./{driver} +permissive $(sed \':a;N;$!ba;s/\\n/ /g\' {runtimeconf}) +slotid={slotid} +profile-interval={profile_interval} {zero_out_dram} {command_macs} {command_rootfses} {command_niclogs} {command_blkdev_logs}  {tracefile} +trace-select0={trace_select} +trace-start0={trace_start} +trace-end0={trace_end} +trace-output-format0={trace_output_format} {dwarf_file_name} +autocounter-readrate0={autocounter_readrate} {autocounterfile} {command_linklatencies} {command_netbws}  {command_shmemportnames} +permissive-off {command_bootbinaries} && stty intr ^c' uartlog"; sleep 1""".format(
+        basecommand = """screen -S fsim{slotid} -d -m bash -c "script -f -c 'stty intr ^] && sudo sudo LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH ./{driver} +permissive $(sed \':a;N;$!ba;s/\\n/ /g\' {runtimeconf}) +slotid={slotid} +profile-interval={profile_interval} {zero_out_dram} {command_nic_macs} {command_switch_macs} {command_nic_ips} {command_rootfses} {command_niclogs} {command_blkdev_logs}  {tracefile} +trace-select0={trace_select} +trace-start0={trace_start} +trace-end0={trace_end} +trace-output-format0={trace_output_format} {dwarf_file_name} +autocounter-readrate0={autocounter_readrate} {autocounterfile} {command_linklatencies} {command_netbws}  {command_shmemportnames} +permissive-off {command_bootbinaries} && stty intr ^c' uartlog"; sleep 1""".format(
             slotid=slotid, driver=driver, runtimeconf=runtimeconf,
-            command_macs=command_macs,
+            command_nic_macs=command_nic_macs,
+            command_switch_macs=command_switch_macs,
+            command_nip_ips=command_nic_ips,
             command_rootfses=command_rootfses,
             command_niclogs=command_niclogs,
             command_blkdev_logs=command_blkdev_logs,
