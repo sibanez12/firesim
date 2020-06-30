@@ -146,7 +146,7 @@ class RuntimeHWConfig:
             slotid=slotid, driver=driver, runtimeconf=runtimeconf,
             command_nic_macs=command_nic_macs,
             command_switch_macs=command_switch_macs,
-            command_nip_ips=command_nic_ips,
+            command_nic_ips=command_nic_ips,
             command_rootfses=command_rootfses,
             command_niclogs=command_niclogs,
             command_blkdev_logs=command_blkdev_logs,

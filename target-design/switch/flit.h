@@ -60,11 +60,18 @@ int write_last_flit(uint8_t * send_buf, int tokenid, int is_last) {
 
 /* get dest mac from flit, then get port from mac */
 uint16_t get_port_from_flit(uint64_t flit, int current_port) {
-    uint16_t is_multicast = (flit >> 16) & 0x1;
-    uint16_t flit_low = (flit >> 48) & 0xFFFF; // indicates dest
-    uint16_t sendport = (__builtin_bswap16(flit_low));
+    // We'll only use the lower 16 bits of the dest ip address for now
+    // Anything ending in 255.255 is a broadcast
+    // uint16_t is_multicast = (flit >> 16) & 0x1;
+    // uint16_t flit_low = (flit >> 48) & 0xFFFF; // indicates dest
+    // uint16_t sendport = (__builtin_bswap16(flit_low));
 
-    return 0;
+    // return 0;
+
+    uint16_t flit_low = flit & 0xFFFF;
+    uint16_t is_multicast = (flit_low == 0xFFFF);
+    uint16_t sendport = __builtin_bswap16(flit_low);
+    fprintf(stdout, "sendport is %#lx\n", sendport);
 
     if (is_multicast)
 	return BROADCAST_ADJUSTED;
@@ -75,6 +82,8 @@ uint16_t get_port_from_flit(uint64_t flit, int current_port) {
     // At this point, we know the MAC address is not a broadcast address,
     // so we can just look up the port in the mac2port table
     sendport = mac2port[sendport];
+
+    fprintf(stdout, "selected port %d\n", sendport);
 
     if (sendport == NUMDOWNLINKS) {
         // this has been mapped to "any uplink", so pick one

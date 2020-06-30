@@ -8,7 +8,7 @@ import datetime
 
 from switch_model_config import *
 from firesim_topology_core import *
-from utils import MacAddress
+from utils import MacAddress, IpAddress
 from fabric.api import *
 from colorama import Fore, Style
 import types
@@ -75,16 +75,24 @@ class FireSimTopologyWithPasses:
         for node in nodes_dfs_order:
             if isinstance(node, FireSimServerNode):
                 node.assign_mac_address(MacAddress())
+    
+    def pass_assign_ip_addresses(self):
+        self.passes_used.append("pass_assign_ip_addresses")
+        nodes_dfs_order = self.firesimtopol.get_dfs_order()
+        IpAddress.reset_allocator()
+        for node in nodes_dfs_order:
+            if isinstance(node, FireSimServerNode):
+                node.assign_ip_address(IpAddress())
 
 
     def pass_compute_switching_tables(self):
-        """ This creates the MAC addr -> port lists for switch nodes.
+        """ This creates the IP addr -> port lists for switch nodes.
 
-        a) First, a pass that computes "downlinkmacs" for each node, which
-        represents all of the MAC addresses that are reachable on the downlinks
+        a) First, a pass that computes "downlinkips" for each node, which
+        represents all of the IP addresses that are reachable on the downlinks
         of this switch, to advertise to uplinks.
 
-        b) Next, a pass that actually constructs the MAC addr -> port lists
+        b) Next, a pass that actually constructs the IP addr -> port lists
         for switch nodes.
 
         It is assumed that downlinks take ports [0, num downlinks) and
@@ -94,17 +102,18 @@ class FireSimTopologyWithPasses:
         switch models do not handle load balancing across multiple paths.
         """
 
-        # this pass requires mac addresses to already be assigned
+        # this pass requires mac and ip addresses to already be assigned
         assert "pass_assign_mac_addresses" in self.passes_used
+        assert "pass_assign_ip_addresses" in self.passes_used
         self.passes_used.append("pass_compute_switching_tables")
 
         nodes_dfs_order = self.firesimtopol.get_dfs_order()
         for node in nodes_dfs_order:
             if isinstance(node, FireSimServerNode):
-                node.downlinkmacs = [node.get_mac_address()]
+                node.downlinkips = [node.get_ip_address()]
             else:
-                childdownlinkmacs = [x.get_downlink_side().downlinkmacs for x in node.downlinks]
-                node.downlinkmacs = reduce(lambda x, y: x + y, childdownlinkmacs)
+                childdownlinkips = [x.get_downlink_side().downlinkips for x in node.downlinks]
+                node.downlinkips = reduce(lambda x, y: x + y, childdownlinkips)
 
         switches_dfs_order = self.firesimtopol.get_dfs_order_switches()
 
@@ -112,11 +121,11 @@ class FireSimTopologyWithPasses:
             uplinkportno = len(switch.downlinks)
 
             # prepopulate the table with the last port, which will be
-            switchtab = [uplinkportno for x in range(MacAddress.next_mac_to_allocate())]
+            switchtab = [uplinkportno for x in range(IpAddress.next_ip_to_allocate())]
             for port_no in range(len(switch.downlinks)):
-                portmacs = switch.downlinks[port_no].get_downlink_side().downlinkmacs
-                for mac in portmacs:
-                    switchtab[mac.as_int_no_prefix()] = port_no
+                portips = switch.downlinks[port_no].get_downlink_side().downlinkips
+                for ip in portips:
+                    switchtab[ip.as_int_no_prefix()] = port_no
 
             switch.switch_table = switchtab
 
@@ -343,6 +352,7 @@ class FireSimTopologyWithPasses:
         i.e. can be run before you have run launchrunfarm. They're run
         automatically when creating this object. """
         self.pass_assign_mac_addresses()
+        self.pass_assign_ip_addresses()
         self.pass_compute_switching_tables()
         self.pass_perform_host_node_mapping() # TODO: we can know ports here?
         self.pass_apply_default_hwconfig()

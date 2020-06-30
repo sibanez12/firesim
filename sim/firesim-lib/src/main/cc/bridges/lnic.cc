@@ -229,11 +229,18 @@ lnic_t::~lnic_t() {
 #define ceil_div(n, d) (((n) - 1) / (d) + 1)
 
 void lnic_t::init() {
-    write(mmio_addrs->nic_mac_addr_upper, (nic_mac_lendian >> 32) & 0xFFFF);
-    write(mmio_addrs->nic_mac_addr_lower, nic_mac_lendian & 0xFFFFFFFF);
-    write(mmio_addrs->switch_mac_addr_upper, (switch_mac_lendian >> 32) & 0xFFFF);
-    write(mmio_addrs->switch_mac_addr_lower, switch_mac_lendian & 0xFFFFFFFF);
-    write(mmio_addrs->nic_ip_addr, nic_ip_lendian);
+    // Old bridge setup enters addr's as little-endian (convenient for RISC-V)
+    // We want them as big-endian (convenient for network)
+    uint64_t nic_mac_bigendian = __builtin_bswap64(nic_mac_lendian) >> 16;
+    uint64_t switch_mac_bigendian = __builtin_bswap64(switch_mac_lendian) >> 16;
+    uint32_t nic_ip_bigendian = __builtin_bswap32(nic_ip_lendian);
+    printf("Writing switch mac old %#lx new %#lx\n", switch_mac_lendian, switch_mac_bigendian);
+
+    write(mmio_addrs->nic_mac_addr_upper, (nic_mac_bigendian >> 32) & 0xFFFFFFFF);
+    write(mmio_addrs->nic_mac_addr_lower, nic_mac_bigendian & 0xFFFFFFFF);
+    write(mmio_addrs->switch_mac_addr_upper, (switch_mac_bigendian >> 32) & 0xFFFFFFFF);
+    write(mmio_addrs->switch_mac_addr_lower, switch_mac_bigendian & 0xFFFFFFFF);
+    write(mmio_addrs->nic_ip_addr, nic_ip_bigendian);
 
     uint32_t output_tokens_available = read(mmio_addrs->outgoing_count);
     uint32_t input_token_capacity = SIMLATENCY_BT - read(mmio_addrs->incoming_count);
