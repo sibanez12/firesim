@@ -173,8 +173,6 @@ for (int i = 0; i < NUMPORTS; i++) {
 while (!pqueue.empty()) {
     switchpacket * tsp = pqueue.top().switchpack;
     pqueue.pop();
-    // fprintf(stdout, "Read: %d, written: %d\n", tsp->amtread, tsp->amtwritten);
-    fprintf(stdout, "Packet source MAC is %#lx, %#lx, %#lx, %#lx, %#lx\n", tsp->dat[0], tsp->dat[1], tsp->dat[2], tsp->dat[3], tsp->dat[4]);
 
     struct timeval format_time;
     format_time.tv_sec = tsp->timestamp / 1000000000;
@@ -194,35 +192,12 @@ while (!pqueue.empty()) {
         fprintf(stdout, "Source MAC %s, dest MAC %s\n", ethernet_layer->getSourceMac().toString().c_str(), ethernet_layer->getDestMac().toString().c_str());
         fprintf(stdout, "Source IP %s, dest IP %s\n", ip_layer->getSrcIpAddress().toString().c_str(), ip_layer->getDstIpAddress().toString().c_str());
     }
-    // struct ether_addr raw_mac_bytes;
-    // memcpy(&raw_mac_bytes.ether_addr_octet[0], &tsp->dat[0], 6);
-    // fprintf(stdout, "Raw MAC is %s\n", ether_ntoa(&raw_mac_bytes));
 
     int ETHER_HEADER_SIZE = 14;
     int IP_DST_FIELD_OFFSET = 16; // Dest field immediately after, in same 64-bit flit
     int IP_SUBNET_OFFSET = 2;
     int flit_offset_doublebytes = (ETHER_HEADER_SIZE + IP_DST_FIELD_OFFSET + IP_SUBNET_OFFSET) / sizeof(uint16_t);
     uint16_t switching_flit = ((uint16_t*)tsp->dat)[flit_offset_doublebytes];
-    fprintf(stdout, "Switching flit %#lx\n", switching_flit);
-    //fprintf(stdout, "Data at offset %d is %#lx\n", data_offset, ((uint8_t*)tsp->dat)[data_offset]);
-
-    // if (ethernet_layer == NULL) {
-    //     fprintf(stdout, "NULL ethernet layer\n");
-    // } else {
-    //     struct ether_addr raw_mac_bytes;
-    //     memcpy(&raw_mac_bytes.ether_addr_octet[0], ethernet_layer->getSourceMac().getRawData(), 6);
-        
-    //     fprintf(stdout, "Source MAC is %s\n", ether_ntoa(&raw_mac_bytes));
-    // }
-    // pcpp::IPv4Layer* ip_layer = parsed_packet.getLayerOfType<pcpp::IPv4Layer>();
-    // if (ip_layer == NULL) {
-    //     fprintf(stdout, "NULL ip layer\n");
-    // } else {
-    //     fprintf(stdout, "IP source address is %s\n", ip_layer->getSrcIpAddress().toString().c_str());
-    // }
-
-    //tsp->dat, tsp->timestamp
-    //uint16_t send_to_port = get_port_from_flit(tsp->dat[0], 0 /* junk remove arg */);
 
     uint16_t send_to_port = get_port_from_flit(switching_flit, 0);
     //printf("packet for port: %x\n", send_to_port);

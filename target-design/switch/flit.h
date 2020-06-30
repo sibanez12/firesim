@@ -71,7 +71,6 @@ uint16_t get_port_from_flit(uint64_t flit, int current_port) {
     uint16_t flit_low = flit & 0xFFFF;
     uint16_t is_multicast = (flit_low == 0xFFFF);
     uint16_t sendport = __builtin_bswap16(flit_low);
-    fprintf(stdout, "sendport is %#lx\n", sendport);
 
     if (is_multicast)
 	return BROADCAST_ADJUSTED;
@@ -83,7 +82,6 @@ uint16_t get_port_from_flit(uint64_t flit, int current_port) {
     // so we can just look up the port in the mac2port table
     sendport = mac2port[sendport];
 
-    fprintf(stdout, "selected port %d\n", sendport);
 
     if (sendport == NUMDOWNLINKS) {
         // this has been mapped to "any uplink", so pick one
