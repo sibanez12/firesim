@@ -249,12 +249,14 @@ class FireSimServerNode(FireSimNode):
         all_linklatencies = [self.server_link_latency]
         all_maxbws = [self.server_bw_max]
         all_bootbins = [self.get_bootbin_name()]
+        all_progargs = [self.get_progargs()]
+
         all_shmemportnames = [shmemportname]
 
         runcommand = self.server_hardware_config.get_boot_simulation_command(
             slotno, all_nic_macs, all_switch_macs, all_nic_ips,
             all_rootfses, all_linklatencies, all_maxbws,
-            self.server_profile_interval, all_bootbins, self.trace_enable,
+            self.server_profile_interval, all_bootbins, all_progargs, self.trace_enable,
             self.trace_select, self.trace_start, self.trace_end, self.trace_output_format,
             self.autocounter_readrate, all_shmemportnames, self.zerooutdram)
 
@@ -373,6 +375,9 @@ class FireSimServerNode(FireSimNode):
         # prefix bootbin name with the job name to disambiguate in supernode
         # cases
         return self.get_job_name() + "-" + self.get_job().bootbinary_path().split("/")[-1]
+    
+    def get_progargs(self):
+        return [self.get_mac_address(), self.get_ip_address()]
 
 
 class FireSimSuperNodeServerNode(FireSimServerNode):
@@ -451,6 +456,9 @@ class FireSimSuperNodeServerNode(FireSimServerNode):
         """ return the sibling's rootfs for supernode mode.
         siblingindex = 1 -> next sibling, 2 = second, 3 = last one."""
         return self.supernode_get_sibling(siblingindex).get_bootbin_name()
+    
+    def supernode_get_sibling_progargs(self, siblingindex):
+        return self.supernode_get_sibling(siblingindex).get_progargs()
 
     def supernode_get_sibling_rootfs_path(self, siblingindex):
         return self.supernode_get_sibling(siblingindex).get_job().rootfs_path()
@@ -482,6 +490,8 @@ class FireSimSuperNodeServerNode(FireSimServerNode):
         all_linklatencies = [self.server_link_latency] + [self.supernode_get_sibling_link_latency(x) for x in range(1, num_siblings)]
         all_maxbws = [self.server_bw_max] + [self.supernode_get_sibling_bw_max(x) for x in range(1, num_siblings)]
 
+        all_progargs = [self.get_progargs()] + [self.supernode_get_sibling_progargs(x) for x in range(1, num_siblings)]
+
         all_shmemportnames = ["default" for x in range(num_siblings)]
         if self.uplinks:
             all_shmemportnames = [self.uplinks[0].get_global_link_id()] + [self.supernode_get_sibling_shmemportname(x) for x in range(1, num_siblings)]
@@ -489,7 +499,7 @@ class FireSimSuperNodeServerNode(FireSimServerNode):
         runcommand = self.server_hardware_config.get_boot_simulation_command(
             slotno, all_nic_macs, all_switch_macs, all_nic_ips,
             all_rootfses, all_linklatencies, all_maxbws,
-            self.server_profile_interval, all_bootbins, self.trace_enable,
+            self.server_profile_interval, all_bootbins, all_progargs, self.trace_enable,
             self.trace_select, self.trace_start, self.trace_end, self.trace_output_format,
             self.autocounter_readrate, all_shmemportnames, self.zerooutdram)
 

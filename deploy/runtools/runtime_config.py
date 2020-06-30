@@ -91,7 +91,7 @@ class RuntimeHWConfig:
                                               all_switch_macs, all_nic_ips,
                                               all_rootfses, all_linklatencies,
                                               all_netbws, profile_interval,
-                                              all_bootbinaries, trace_enable,
+                                              all_bootbinaries, all_progargs, trace_enable,
                                               trace_select, trace_start, trace_end,
                                               trace_output_format,
                                               autocounter_readrate, all_shmemportnames,
@@ -135,7 +135,14 @@ class RuntimeHWConfig:
         command_niclogs = array_to_lognames(all_nic_macs, "niclog")
         command_blkdev_logs = array_to_lognames(all_rootfses, "blkdev-log")
 
-        command_bootbinaries = array_to_plusargs(all_bootbinaries, "+prog")
+        all_progfulls = []
+        for i in range(len(all_bootbinaries)):
+            progfull = all_bootbinaries[i]
+            for arg in all_progargs[i]:
+                progfull += " " + str(arg)
+            all_progfulls.append(progfull)
+        
+        command_bootbinaries = array_to_plusargs(all_progfulls, "+prog")
         zero_out_dram = "+zero-out-dram" if (enable_zerooutdram) else ""
 
         # TODO supernode support
