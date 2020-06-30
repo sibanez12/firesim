@@ -225,7 +225,7 @@ class FireSimServerNode(FireSimNode):
 
 
     def diagramstr(self):
-        msg = """{}:{}\n----------\nMAC: {}\n{}\n{}""".format("FireSimServerNode",
+        msg = """{}:{}\n----------\nMAC: {}\nIP: {}\n{}\n{}""".format("FireSimServerNode",
                                                    str(self.server_id_internal),
                                                    str(self.mac_address),
                                                    str(self.ip_address),
