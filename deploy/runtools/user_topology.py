@@ -214,6 +214,12 @@ class UserTopologies(object):
         for l2switchNo in range(len(level2switches)):
             level2switches[l2switchNo].add_downlinks(servers[l2switchNo])
 
+    def lnic_2xlarge_supernode_4config(self):
+        # Use 1 f1.2xlarge instance to host a single supernode with 4 total nanopu's
+        self.roots = [FireSimSwitchNode()]
+        servers = [FireSimSuperNodeServerNode()] + [FireSimDummyServerNode() for x in range(3)]
+        self.roots[0].add_downlinks(servers)
+
     def example_32config(self):
         self.roots = [FireSimSwitchNode()]
         level2switches = [FireSimSwitchNode() for x in range(4)]

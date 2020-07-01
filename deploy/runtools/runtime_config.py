@@ -137,9 +137,9 @@ class RuntimeHWConfig:
 
         all_progfulls = []
         for i in range(len(all_bootbinaries)):
-            progfull = all_bootbinaries[i]
+            progfull = str(all_bootbinaries[i])
             for arg in all_progargs[i]:
-                progfull += " " + str(arg)
+                progfull += "^" + str(arg)
             all_progfulls.append(progfull)
         
         command_bootbinaries = array_to_plusargs(all_progfulls, "+prog")
