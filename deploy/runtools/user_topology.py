@@ -220,6 +220,20 @@ class UserTopologies(object):
         servers = [FireSimSuperNodeServerNode()] + [FireSimDummyServerNode() for x in range(3)]
         self.roots[0].add_downlinks(servers)
 
+    def lnic_4xlarge_supernode_16config(self):
+        # Use 2 f1.4xlarge instances to host 4 supernodes with 16 total nanopu's
+        # This is the smallest configuration that tests all 3 network connection types
+        # (same machine and same fpga, same machine but different fpga, and different machines)
+        self.roots = [FireSimSwitchNode()]
+        level2switches = [FireSimSwitchNode() for x in range(2)]
+        servers = [UserTopologies.supernode_flatten([[FireSimSuperNodeServerNode(), FireSimDummyServerNode(), FireSimDummyServerNode(), FireSimDummyServerNode()] for y in range(2)]) for x in range(2)]
+
+        for root in self.roots:
+            root.add_downlinks(level2switches)
+        
+        for l2switchNo in range(len(level2switches)):
+            level2switches[l2switchNo].add_downlinks(servers[l2switchNo])
+
     def example_32config(self):
         self.roots = [FireSimSwitchNode()]
         level2switches = [FireSimSwitchNode() for x in range(4)]
