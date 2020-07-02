@@ -234,6 +234,21 @@ class UserTopologies(object):
         for l2switchNo in range(len(level2switches)):
             level2switches[l2switchNo].add_downlinks(servers[l2switchNo])
 
+    def lnic_4xlarge_supernode_32config(self):
+        # Use 4 f1.4xlarge instances to host 8 supernodes with 32 total nanopu's
+        # With our current spot limit at 10 and one spot instance used for an m4 instance,
+        # this is the largest simulation we can currently run
+        # TODO: Set up a clos topology
+        self.roots = [FireSimSwitchNode()]
+        level2switches = [FireSimSwitchNode() for x in range(4)]
+        servers = [UserTopologies.supernode_flatten([[FireSimSuperNodeServerNode(), FireSimDummyServerNode(), FireSimDummyServerNode(), FireSimDummyServerNode()] for y in range(2)]) for x in range(4)]
+
+        for root in self.roots:
+            root.add_downlinks(level2switches)
+        
+        for l2switchNo in range(len(level2switches)):
+            level2switches[l2switchNo].add_downlinks(servers[l2switchNo])
+
     def example_32config(self):
         self.roots = [FireSimSwitchNode()]
         level2switches = [FireSimSwitchNode() for x in range(4)]
