@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #define BROADCAST_ADJUSTED (0xffff)
+#define UNKNOWN_ADDRESS    (0xfffe)
 
 /* ----------------------------------------------------
  * buffer flit operations
@@ -76,6 +77,12 @@ uint16_t get_port_from_flit(uint64_t flit, int current_port) {
 	return BROADCAST_ADJUSTED;
 
     sendport = sendport & 0xFFFF;
+
+    if (sendport >= NUMIPSKNOWN) {
+        // Unknown destination address, indicate that the switch should drop the packet
+        return UNKNOWN_ADDRESS;
+    }
+
     //printf("mac: %04x\n", sendport);
 
     // At this point, we know the MAC address is not a broadcast address,
@@ -83,12 +90,13 @@ uint16_t get_port_from_flit(uint64_t flit, int current_port) {
     sendport = mac2port[sendport];
 
 
+
     if (sendport == NUMDOWNLINKS) {
         // this has been mapped to "any uplink", so pick one
         int randval = rand() % NUMUPLINKS;
         sendport = randval + NUMDOWNLINKS;
-//        printf("sending to random uplink.\n");
-//        printf("port: %04x\n", sendport);
+        //fprintf(stdout, "sending to random uplink.\n");
+        //fprintf(stdout, "port: %04x\n", sendport);
     }
     //printf("port: %04x\n", sendport);
     return sendport;

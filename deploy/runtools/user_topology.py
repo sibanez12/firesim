@@ -8,6 +8,39 @@ class UserTopologies(object):
     """ A class that just separates out user-defined/configurable topologies
     from the rest of the boilerplate in FireSimTopology() """
 
+    def lnic_clos_m_n_r(self, m, n, r):
+        rootswitches = [FireSimSwitchNode() for x in range(m)]
+        self.roots = rootswitches
+        leafswitches = [FireSimSwitchNode() for x in range(r)]
+        servers = [[FireSimServerNode() for x in range(n)] for y in range(r)]
+        for rswitch in rootswitches:
+            rswitch.add_downlinks(leafswitches)
+
+        for leafswitch, servergroup in zip(leafswitches, servers):
+            leafswitch.add_downlinks(servergroup)
+
+        def custom_mapper(fsim_topol_with_passes):
+            for i, rswitch in enumerate(rootswitches):
+                fsim_topol_with_passes.run_farm.m4_16s[i].add_switch(rswitch)
+
+            for j, lswitch in enumerate(leafswitches):
+                fsim_topol_with_passes.run_farm.f1_4s[j].add_switch(lswitch)
+                for sim in servers[j]:
+                    fsim_topol_with_passes.run_farm.f1_4s[j].add_simulation(sim)
+
+        self.custom_mapper = custom_mapper
+    
+    def lnic_clos_2_2_2(self):
+        """
+        2 root switches, 2 leaf switches, 2 links to nodes from each leaf switch.
+        Requires 2 m4.16xlarges and 2 f1.4xlarges
+        Uses a regular image, not supernodes.
+        """
+        self.lnic_clos_m_n_r(2, 2, 2)
+    
+    def lnic_clos_2_2_3(self):
+        self.lnic_clos_m_n_r(2, 2, 3)
+
     def clos_m_n_r(self, m, n, r):
         """ DO NOT USE THIS DIRECTLY, USE ONE OF THE INSTANTIATIONS BELOW. """
         """ Clos topol where:

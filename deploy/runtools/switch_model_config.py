@@ -83,8 +83,9 @@ class AbstractSwitchToSwitchConfig:
         retstr = """
     #ifdef MACPORTSCONFIG
     uint16_t mac2port[{}]  {}
+    #define NUMIPSKNOWN {}
     #endif
-    """.format(len(mac2port_pythonarray), commaseparated)
+    """.format(len(mac2port_pythonarray), commaseparated, len(mac2port_pythonarray))
         return retstr
 
     def get_header(self):
