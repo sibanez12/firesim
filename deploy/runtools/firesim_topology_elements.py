@@ -567,7 +567,7 @@ class FireSimSwitchNode(FireSimNode):
     # used to give switches a global ID
     SWITCHES_CREATED = 0
 
-    def __init__(self, switching_latency=None, link_latency=None, bandwidth=None):
+    def __init__(self, switching_latency=None, link_latency=None, bandwidth=None, high_priority_obuf_size=None, low_priority_obuf_size=None):
         super(FireSimSwitchNode, self).__init__()
         self.switch_id_internal = FireSimSwitchNode.SWITCHES_CREATED
         FireSimSwitchNode.SWITCHES_CREATED += 1
@@ -575,6 +575,8 @@ class FireSimSwitchNode(FireSimNode):
         self.switch_link_latency = link_latency
         self.switch_switching_latency = switching_latency
         self.switch_bandwidth = bandwidth
+        self.high_priority_obuf_size = high_priority_obuf_size
+        self.low_priority_obuf_size = low_priority_obuf_size
 
         # switch_builder is a class designed to emit a particular switch model.
         # it should take self and then be able to emit a particular switch model's

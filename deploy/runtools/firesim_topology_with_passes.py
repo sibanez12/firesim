@@ -37,7 +37,7 @@ class FireSimTopologyWithPasses:
                  defaulttraceenable, defaulttraceselect, defaulttracestart, defaulttraceend,
                  defaulttraceoutputformat,
                  defaultautocounterreadrate, terminateoncompletion,
-                 defaultzerooutdram):
+                 defaultzerooutdram, high_priority_obuf_size, low_priority_obuf_size):
         self.passes_used = []
         self.user_topology_name = user_topology_name
         self.no_net_num_nodes = no_net_num_nodes
@@ -58,6 +58,9 @@ class FireSimTopologyWithPasses:
         self.defaultautocounterreadrate = defaultautocounterreadrate
         self.defaultzerooutdram = defaultzerooutdram
         self.terminateoncompletion = terminateoncompletion
+
+        self.high_priority_obuf_size = high_priority_obuf_size
+        self.low_priority_obuf_size = low_priority_obuf_size
 
         self.phase_one_passes()
 
@@ -307,6 +310,10 @@ class FireSimTopologyWithPasses:
                     node.switch_switching_latency = self.defaultswitchinglatency
                 if node.switch_bandwidth is None:
                     node.switch_bandwidth = self.defaultnetbandwidth
+                if node.high_priority_obuf_size is None:
+                    node.high_priority_obuf_size = self.high_priority_obuf_size
+                if node.low_priority_obuf_size is None:
+                    node.low_priority_obuf_size = self.low_priority_obuf_size
 
             if isinstance(node, FireSimServerNode):
                 if node.server_link_latency is None:

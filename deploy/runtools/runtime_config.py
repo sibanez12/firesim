@@ -273,6 +273,8 @@ class InnerRuntimeConfiguration:
         self.switchinglatency = int(runtime_dict['targetconfig']['switchinglatency'])
         self.netbandwidth = int(runtime_dict['targetconfig']['netbandwidth'])
         self.profileinterval = int(runtime_dict['targetconfig']['profileinterval'])
+        self.high_priority_obuf_size = int(runtime_dict['targetconfig']['high_priority_obuf_size'])
+        self.low_priority_obuf_size = int(runtime_dict['targetconfig']['low_priority_obuf_size'])
         # Default values
         self.trace_enable = False
         self.trace_select = "0"
@@ -347,7 +349,9 @@ class RuntimeConfig:
             self.innerconf.trace_select, self.innerconf.trace_start, self.innerconf.trace_end,
             self.innerconf.trace_output_format,
             self.innerconf.autocounter_readrate, self.innerconf.terminateoncompletion,
-            self.innerconf.zerooutdram)
+            self.innerconf.zerooutdram,
+            self.innerconf.high_priority_obuf_size,
+            self.innerconf.low_priority_obuf_size)
 
     def launch_run_farm(self):
         """ directly called by top-level launchrunfarm command. """

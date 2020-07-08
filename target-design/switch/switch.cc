@@ -101,8 +101,9 @@ uint64_t this_iter_cycles_start = 0;
 #define LNIC_HEADER_MSG_LEN_OFFSET 5
 #define LNIC_PACKET_CHOPPED_SIZE   128 // Bytes, the minimum L-NIC packet size
 
-#define HIGH_PRIORITY_OBUF_SIZE    (300L)
-#define LOW_PRIORITY_OBUF_SIZE     (300L)
+// These are both set by command-line arguments. Don't change them here.
+int HIGH_PRIORITY_OBUF_SIZE = 0;
+int LOW_PRIORITY_OBUF_SIZE = 0;
 
 // TODO: replace these port mapping hacks with a mac -> port mapping,
 // could be hardcoded
@@ -325,24 +326,29 @@ static void simplify_frac(int n, int d, int *nn, int *dd)
 int main (int argc, char *argv[]) {
     int bandwidth;
 
-    if (argc < 4) {
+    if (argc < 6) {
         // if insufficient args, error out
-        fprintf(stdout, "usage: ./switch LINKLATENCY SWITCHLATENCY BANDWIDTH\n");
+        fprintf(stdout, "usage: ./switch LINKLATENCY SWITCHLATENCY BANDWIDTH HIGH_PRIORITY_OBUF_SIZE LOW_PRIORITY_OBUF_SIZE\n");
         fprintf(stdout, "insufficient args provided\n.");
         fprintf(stdout, "LINKLATENCY and SWITCHLATENCY should be provided in cycles.\n");
         fprintf(stdout, "BANDWIDTH should be provided in Gbps\n");
+        fprintf(stdout, "OBUF SIZES should be provided in bytes.\n");
         exit(1);
     }
 
     LINKLATENCY = atoi(argv[1]);
     switchlat = atoi(argv[2]);
     bandwidth = atoi(argv[3]);
+    HIGH_PRIORITY_OBUF_SIZE = atoi(argv[4]);
+    LOW_PRIORITY_OBUF_SIZE = atoi(argv[5]);
 
     simplify_frac(bandwidth, 200, &throttle_numer, &throttle_denom);
 
     fprintf(stdout, "Using link latency: %d\n", LINKLATENCY);
     fprintf(stdout, "Using switching latency: %d\n", SWITCHLATENCY);
     fprintf(stdout, "BW throttle set to %d/%d\n", throttle_numer, throttle_denom);
+    fprintf(stdout, "High priority obuf size: %d\n", HIGH_PRIORITY_OBUF_SIZE);
+    fprintf(stdout, "Low priority obuf size: %d\n", LOW_PRIORITY_OBUF_SIZE);
 
     if ((LINKLATENCY % 7) != 0) {
         // if invalid link latency, error out.
