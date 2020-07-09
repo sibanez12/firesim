@@ -100,6 +100,7 @@ uint64_t this_iter_cycles_start = 0;
 #define LNIC_CHOP_FLAG_MASK        0b10000
 #define LNIC_HEADER_MSG_LEN_OFFSET 5
 #define LNIC_PACKET_CHOPPED_SIZE   128 // Bytes, the minimum L-NIC packet size
+#define LNIC_HEADER_SIZE           30
 
 // These are both set by command-line arguments. Don't change them here.
 int HIGH_PRIORITY_OBUF_SIZE = 0;
@@ -261,7 +262,8 @@ void send_with_priority(uint16_t port, switchpacket* tsp) {
     uint64_t lnic_msg_len_bytes_offset = (uint64_t)tsp->dat + ETHER_HEADER_SIZE + IP_HEADER_SIZE + LNIC_HEADER_MSG_LEN_OFFSET;
     uint16_t lnic_msg_len_bytes = *(uint16_t*)lnic_msg_len_bytes_offset;
     lnic_msg_len_bytes = __builtin_bswap16(lnic_msg_len_bytes);
-    //fprintf(stdout, "Lnic msg len bytes is %d\n", lnic_msg_len_bytes);
+    fprintf(stdout, "Lnic msg len bytes is %d\n", lnic_msg_len_bytes);
+    fprintf(stdout, "True packet length (minux eth and ip) is %d\n", packet_size_bytes - ETHER_HEADER_SIZE - IP_HEADER_SIZE);
     std::string to_send = "Flags: ";
     to_send += (is_data ? "DATA " : "");
     to_send += (is_ack ? "ACK " : "");
@@ -270,6 +272,13 @@ void send_with_priority(uint16_t port, switchpacket* tsp) {
     to_send += (is_chop ? "CHOP " : "");
     fprintf(stdout, "%s Port: %d\n", to_send.c_str(), port);
     fprintf(stdout, "High obuf at %d low obuf at %d\n", ports[port]->outputqueue_high_size, ports[port]->outputqueue_low_size);
+
+    uint64_t packet_data_size = packet_size_bytes - ETHER_HEADER_SIZE - IP_HEADER_SIZE - LNIC_HEADER_SIZE;
+    uint64_t packet_msg_words_offset = (uint64_t)tsp->dat + ETHER_HEADER_SIZE + IP_HEADER_SIZE + LNIC_HEADER_SIZE;
+    uint64_t* packet_msg_words = (uint64_t*)packet_msg_words_offset;
+    for (int i = 0; i < packet_data_size / sizeof(uint64_t); i++) {
+        fprintf(stdout, "%d: %#lx\n", i, __builtin_bswap64(packet_msg_words[i]));
+    }
 
     if (is_data && !is_chop) {
         // Regular data, send to low priority queue or chop and send to high priority
