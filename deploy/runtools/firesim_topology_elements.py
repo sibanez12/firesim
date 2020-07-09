@@ -187,6 +187,12 @@ class FireSimServerNode(FireSimNode):
 
     def get_mac_address(self):
         return self.mac_address
+    
+    def assign_ip_address(self, ipaddr):
+        self.ip_address = ipaddr
+    
+    def get_ip_address(self):
+        return self.ip_address
 
     def process_qcow2_rootfses(self, rootfses_list):
         """ Take in list of all rootfses on this node. For the qcow2 ones, find
@@ -219,9 +225,10 @@ class FireSimServerNode(FireSimNode):
 
 
     def diagramstr(self):
-        msg = """{}:{}\n----------\nMAC: {}\n{}\n{}""".format("FireSimServerNode",
+        msg = """{}:{}\n----------\nMAC: {}\nIP: {}\n{}\n{}""".format("FireSimServerNode",
                                                    str(self.server_id_internal),
                                                    str(self.mac_address),
+                                                   str(self.ip_address),
                                                    str(self.job),
                                                    str(self.server_hardware_config))
         return msg
@@ -234,16 +241,22 @@ class FireSimServerNode(FireSimNode):
         if self.uplinks:
             shmemportname = self.uplinks[0].get_global_link_id()
 
-        all_macs = [self.get_mac_address()]
+        all_nic_macs = [self.get_mac_address()]
+        all_switch_macs = ["08:55:66:77:88:08"]
+        all_nic_ips = [self.get_ip_address()]
+
         all_rootfses = self.process_qcow2_rootfses([self.get_rootfs_name()])
         all_linklatencies = [self.server_link_latency]
         all_maxbws = [self.server_bw_max]
         all_bootbins = [self.get_bootbin_name()]
+        all_progargs = [self.get_progargs()]
+
         all_shmemportnames = [shmemportname]
 
         runcommand = self.server_hardware_config.get_boot_simulation_command(
-            slotno, all_macs, all_rootfses, all_linklatencies, all_maxbws,
-            self.server_profile_interval, all_bootbins, self.trace_enable,
+            slotno, all_nic_macs, all_switch_macs, all_nic_ips,
+            all_rootfses, all_linklatencies, all_maxbws,
+            self.server_profile_interval, all_bootbins, all_progargs, self.trace_enable,
             self.trace_select, self.trace_start, self.trace_end, self.trace_output_format,
             self.autocounter_readrate, all_shmemportnames, self.zerooutdram)
 
@@ -362,6 +375,9 @@ class FireSimServerNode(FireSimNode):
         # prefix bootbin name with the job name to disambiguate in supernode
         # cases
         return self.get_job_name() + "-" + self.get_job().bootbinary_path().split("/")[-1]
+    
+    def get_progargs(self):
+        return [self.get_mac_address(), self.get_ip_address()]
 
 
 class FireSimSuperNodeServerNode(FireSimServerNode):
@@ -427,6 +443,9 @@ class FireSimSuperNodeServerNode(FireSimServerNode):
         """ return the sibling's mac address for supernode mode.
         siblingindex = 1 -> next sibling, 2 = second, 3 = last one."""
         return self.supernode_get_sibling(siblingindex).get_mac_address()
+    
+    def supernode_get_sibling_ip_address(self, siblingindex):
+        return self.supernode_get_sibling(siblingindex).get_ip_address()
 
     def supernode_get_sibling_rootfs(self, siblingindex):
         """ return the sibling's rootfs for supernode mode.
@@ -437,6 +456,9 @@ class FireSimSuperNodeServerNode(FireSimServerNode):
         """ return the sibling's rootfs for supernode mode.
         siblingindex = 1 -> next sibling, 2 = second, 3 = last one."""
         return self.supernode_get_sibling(siblingindex).get_bootbin_name()
+    
+    def supernode_get_sibling_progargs(self, siblingindex):
+        return self.supernode_get_sibling(siblingindex).get_progargs()
 
     def supernode_get_sibling_rootfs_path(self, siblingindex):
         return self.supernode_get_sibling(siblingindex).get_job().rootfs_path()
@@ -459,19 +481,25 @@ class FireSimSuperNodeServerNode(FireSimServerNode):
 
         num_siblings = self.supernode_get_num_siblings_plus_one()
 
-        all_macs = [self.get_mac_address()] + [self.supernode_get_sibling_mac_address(x) for x in range(1, num_siblings)]
+        all_nic_macs = [self.get_mac_address()] + [self.supernode_get_sibling_mac_address(x) for x in range(1, num_siblings)]
+        all_switch_macs = ["08:55:66:77:88:08"]
+        all_nic_ips = [self.get_ip_address()] + [self.supernode_get_sibling_ip_address(x) for x in range(1, num_siblings)]
+
         all_rootfses = self.process_qcow2_rootfses([self.get_rootfs_name()] + [self.supernode_get_sibling_rootfs(x) for x in range(1, num_siblings)])
         all_bootbins = [self.get_bootbin_name()] + [self.supernode_get_sibling_bootbin(x) for x in range(1, num_siblings)]
         all_linklatencies = [self.server_link_latency] + [self.supernode_get_sibling_link_latency(x) for x in range(1, num_siblings)]
         all_maxbws = [self.server_bw_max] + [self.supernode_get_sibling_bw_max(x) for x in range(1, num_siblings)]
+
+        all_progargs = [self.get_progargs()] + [self.supernode_get_sibling_progargs(x) for x in range(1, num_siblings)]
 
         all_shmemportnames = ["default" for x in range(num_siblings)]
         if self.uplinks:
             all_shmemportnames = [self.uplinks[0].get_global_link_id()] + [self.supernode_get_sibling_shmemportname(x) for x in range(1, num_siblings)]
 
         runcommand = self.server_hardware_config.get_boot_simulation_command(
-            slotno, all_macs, all_rootfses, all_linklatencies, all_maxbws,
-            self.server_profile_interval, all_bootbins, self.trace_enable,
+            slotno, all_nic_macs, all_switch_macs, all_nic_ips,
+            all_rootfses, all_linklatencies, all_maxbws,
+            self.server_profile_interval, all_bootbins, all_progargs, self.trace_enable,
             self.trace_select, self.trace_start, self.trace_end, self.trace_output_format,
             self.autocounter_readrate, all_shmemportnames, self.zerooutdram)
 
@@ -509,6 +537,11 @@ class FireSimSuperNodeServerNode(FireSimServerNode):
         all_paths.append([self.server_hardware_config.get_local_driver_path(), ''])
         all_paths.append([self.server_hardware_config.get_local_runtime_conf_path(), ''])
         all_paths.append([self.server_hardware_config.get_local_assert_def_path(), ''])
+
+        # shared libraries
+        all_paths.append(["$RISCV/lib/libdwarf.so", "libdwarf.so.1"])
+        all_paths.append(["$RISCV/lib/libelf.so", "libelf.so.1"])
+
         return all_paths
 
 class FireSimDummyServerNode(FireSimServerNode):
@@ -534,7 +567,7 @@ class FireSimSwitchNode(FireSimNode):
     # used to give switches a global ID
     SWITCHES_CREATED = 0
 
-    def __init__(self, switching_latency=None, link_latency=None, bandwidth=None):
+    def __init__(self, switching_latency=None, link_latency=None, bandwidth=None, high_priority_obuf_size=None, low_priority_obuf_size=None):
         super(FireSimSwitchNode, self).__init__()
         self.switch_id_internal = FireSimSwitchNode.SWITCHES_CREATED
         FireSimSwitchNode.SWITCHES_CREATED += 1
@@ -542,6 +575,8 @@ class FireSimSwitchNode(FireSimNode):
         self.switch_link_latency = link_latency
         self.switch_switching_latency = switching_latency
         self.switch_bandwidth = bandwidth
+        self.high_priority_obuf_size = high_priority_obuf_size
+        self.low_priority_obuf_size = low_priority_obuf_size
 
         # switch_builder is a class designed to emit a particular switch model.
         # it should take self and then be able to emit a particular switch model's
@@ -590,6 +625,6 @@ class FireSimSwitchNode(FireSimNode):
 
     def diagramstr(self):
         msg = """{}:{}\n---------\ndownlinks: {}\nswitchingtable: {}""".format(
-            "FireSimSwitchNode", str(self.switch_id_internal), ", ".join(map(str, self.downlinkmacs)),
+            "FireSimSwitchNode", str(self.switch_id_internal), ", ".join(map(str, self.downlinkips)),
             ", ".join(map(str, self.switch_table)))
         return msg

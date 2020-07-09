@@ -83,8 +83,9 @@ class AbstractSwitchToSwitchConfig:
         retstr = """
     #ifdef MACPORTSCONFIG
     uint16_t mac2port[{}]  {}
+    #define NUMIPSKNOWN {}
     #endif
-    """.format(len(mac2port_pythonarray), commaseparated)
+    """.format(len(mac2port_pythonarray), commaseparated, len(mac2port_pythonarray))
         return retstr
 
     def get_header(self):
@@ -167,8 +168,10 @@ class AbstractSwitchToSwitchConfig:
         switchlatency = self.fsimswitchnode.switch_switching_latency
         linklatency = self.fsimswitchnode.switch_link_latency
         bandwidth = self.fsimswitchnode.switch_bandwidth
+        high_priority_obuf_size = self.fsimswitchnode.high_priority_obuf_size
+        low_priority_obuf_size = self.fsimswitchnode.low_priority_obuf_size
         # insert gdb -ex run --args between sudo and ./ below to start switches in gdb
-        return """screen -S {} -d -m bash -c "script -f -c 'sudo ./{} {} {} {}' switchlog"; sleep 1""".format(self.switch_binary_name(), self.switch_binary_name(), linklatency, switchlatency, bandwidth)
+        return """screen -S {} -d -m bash -c "script -f -c 'sudo ./{} {} {} {} {} {}' switchlog"; sleep 1""".format(self.switch_binary_name(), self.switch_binary_name(), linklatency, switchlatency, bandwidth, high_priority_obuf_size, low_priority_obuf_size)
 
     def kill_switch_simulation_command(self):
         """ Return the command to kill the switch. """

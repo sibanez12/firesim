@@ -11,6 +11,14 @@
 #include <omp.h>
 #include <cstdlib>
 #include <arpa/inet.h>
+#include <string>
+
+#include <time.h>
+#include <netinet/ether.h>
+#include <net/ethernet.h>
+#include "Packet.h"
+#include "EthLayer.h"
+#include "IPv4Layer.h"
 
 #define IGNORE_PRINTF
 
@@ -80,10 +88,29 @@ uint64_t this_iter_cycles_start = 0;
 #include "socketport.h"
 #include "sshport.h"
 
+#define ETHER_HEADER_SIZE          14
+#define IP_DST_FIELD_OFFSET        16 // Dest field immediately after, in same 64-bit flit
+#define IP_SUBNET_OFFSET           2
+#define IP_HEADER_SIZE             20 // TODO: Not always, just currently the case with L-NIC.
+
+#define LNIC_DATA_FLAG_MASK        0b1
+#define LNIC_ACK_FLAG_MASK         0b10
+#define LNIC_NACK_FLAG_MASK        0b100
+#define LNIC_PULL_FLAG_MASK        0b1000
+#define LNIC_CHOP_FLAG_MASK        0b10000
+#define LNIC_HEADER_MSG_LEN_OFFSET 5
+#define LNIC_PACKET_CHOPPED_SIZE   128 // Bytes, the minimum L-NIC packet size
+#define LNIC_HEADER_SIZE           30
+
+// These are both set by command-line arguments. Don't change them here.
+int HIGH_PRIORITY_OBUF_SIZE = 0;
+int LOW_PRIORITY_OBUF_SIZE = 0;
+
 // TODO: replace these port mapping hacks with a mac -> port mapping,
 // could be hardcoded
 
 BasePort * ports[NUMPORTS];
+void send_with_priority(uint16_t port, switchpacket* tsp);
 
 /* switch from input ports to output ports */
 void do_fast_switching() {
@@ -166,10 +193,35 @@ for (int i = 0; i < NUMPORTS; i++) {
 while (!pqueue.empty()) {
     switchpacket * tsp = pqueue.top().switchpack;
     pqueue.pop();
-    uint16_t send_to_port = get_port_from_flit(tsp->dat[0], 0 /* junk remove arg */);
-    //printf("packet for port: %x\n", send_to_port);
-    //printf("packet timestamp: %ld\n", tsp->timestamp);
-    if (send_to_port == BROADCAST_ADJUSTED) {
+
+    struct timeval format_time;
+    format_time.tv_sec = tsp->timestamp / 1000000000;
+    format_time.tv_usec = (tsp->timestamp % 1000000000) / 1000;
+    pcpp::RawPacket raw_packet((const uint8_t*)tsp->dat, 200*sizeof(uint64_t), format_time, false, pcpp::LINKTYPE_ETHERNET);
+    pcpp::Packet parsed_packet(&raw_packet);
+    pcpp::EthLayer* ethernet_layer = parsed_packet.getLayerOfType<pcpp::EthLayer>();
+    pcpp::IPv4Layer* ip_layer = parsed_packet.getLayerOfType<pcpp::IPv4Layer>();
+    if (ethernet_layer == NULL || ip_layer == NULL) {
+        if (ethernet_layer == NULL) {
+            fprintf(stdout, "NULL ethernet layer\n");
+        }
+        if (ip_layer == NULL) {
+            fprintf(stdout, "NULL ip layer\n");
+        }
+    } else {
+        //fprintf(stdout, "Source MAC %s, dest MAC %s\n", ethernet_layer->getSourceMac().toString().c_str(), ethernet_layer->getDestMac().toString().c_str());
+        fprintf(stdout, "Source IP %s, dest IP %s\n", ip_layer->getSrcIpAddress().toString().c_str(), ip_layer->getDstIpAddress().toString().c_str());
+        //fprintf(stdout, "Header length is %d\n", ip_layer->getHeaderLen());
+    }
+
+    int flit_offset_doublebytes = (ETHER_HEADER_SIZE + IP_DST_FIELD_OFFSET + IP_SUBNET_OFFSET) / sizeof(uint16_t);
+    uint16_t switching_flit = ((uint16_t*)tsp->dat)[flit_offset_doublebytes];
+
+    uint16_t send_to_port = get_port_from_flit(switching_flit, 0);
+    if (send_to_port == UNKNOWN_ADDRESS) {
+        fprintf(stdout, "Packet with unknown destination address, dropping\n");
+        // Do nothing for a packet with an unknown destination address
+    } else if (send_to_port == BROADCAST_ADJUSTED) {
 #define ADDUPLINK (NUMUPLINKS > 0 ? 1 : 0)
         // this will only send broadcasts to the first (zeroeth) uplink.
         // on a switch receiving broadcast packet from an uplink, this should
@@ -178,16 +230,14 @@ while (!pqueue.empty()) {
             if (i != tsp->sender ) {
                 switchpacket * tsp2 = (switchpacket*)malloc(sizeof(switchpacket));
                 memcpy(tsp2, tsp, sizeof(switchpacket));
-                ports[i]->outputqueue.push(tsp2);
+                send_with_priority(i, tsp2);
             }
         }
         free(tsp);
     } else {
-        ports[send_to_port]->outputqueue.push(tsp);
+        send_with_priority(send_to_port, tsp);
     }
 }
-
-
 // finally in parallel, flush whatever we can to the output queues based on timestamp
 
 #pragma omp parallel for
@@ -196,6 +246,75 @@ for (int port = 0; port < NUMPORTS; port++) {
     thisport->write_flits_to_output();
 }
 
+}
+
+void send_with_priority(uint16_t port, switchpacket* tsp) {
+    uint8_t lnic_header_flags = *((uint8_t*)tsp->dat + ETHER_HEADER_SIZE + IP_HEADER_SIZE);
+    bool is_data = lnic_header_flags & LNIC_DATA_FLAG_MASK;
+    bool is_ack = lnic_header_flags & LNIC_ACK_FLAG_MASK;
+    bool is_nack = lnic_header_flags & LNIC_NACK_FLAG_MASK;
+    bool is_pull = lnic_header_flags & LNIC_PULL_FLAG_MASK;
+    bool is_chop = lnic_header_flags & LNIC_CHOP_FLAG_MASK;
+    uint64_t packet_size_bytes = tsp->amtwritten * sizeof(uint64_t);
+    
+    //fprintf(stdout, "Packet info: header_flags %#lx is_data %d is_chop %d packet_size_bytes %d\n", lnic_header_flags, is_data, is_chop, packet_size_bytes);
+
+    uint64_t lnic_msg_len_bytes_offset = (uint64_t)tsp->dat + ETHER_HEADER_SIZE + IP_HEADER_SIZE + LNIC_HEADER_MSG_LEN_OFFSET;
+    uint16_t lnic_msg_len_bytes = *(uint16_t*)lnic_msg_len_bytes_offset;
+    lnic_msg_len_bytes = __builtin_bswap16(lnic_msg_len_bytes);
+    fprintf(stdout, "Lnic msg len bytes is %d\n", lnic_msg_len_bytes);
+    fprintf(stdout, "True packet length (minux eth and ip) is %d\n", packet_size_bytes - ETHER_HEADER_SIZE - IP_HEADER_SIZE);
+    std::string to_send = "Flags: ";
+    to_send += (is_data ? "DATA " : "");
+    to_send += (is_ack ? "ACK " : "");
+    to_send += (is_nack ? "NACK " : "");
+    to_send += (is_pull ? "PULL " : "");
+    to_send += (is_chop ? "CHOP " : "");
+    fprintf(stdout, "%s Port: %d\n", to_send.c_str(), port);
+    fprintf(stdout, "High obuf at %d low obuf at %d\n", ports[port]->outputqueue_high_size, ports[port]->outputqueue_low_size);
+
+    uint64_t packet_data_size = packet_size_bytes - ETHER_HEADER_SIZE - IP_HEADER_SIZE - LNIC_HEADER_SIZE;
+    uint64_t packet_msg_words_offset = (uint64_t)tsp->dat + ETHER_HEADER_SIZE + IP_HEADER_SIZE + LNIC_HEADER_SIZE;
+    uint64_t* packet_msg_words = (uint64_t*)packet_msg_words_offset;
+    for (int i = 0; i < packet_data_size / sizeof(uint64_t); i++) {
+        fprintf(stdout, "%d: %#lx\n", i, __builtin_bswap64(packet_msg_words[i]));
+    }
+
+    if (is_data && !is_chop) {
+        // Regular data, send to low priority queue or chop and send to high priority
+        // queue if low priority queue is full.
+        if (packet_size_bytes + ports[port]->outputqueue_low_size < LOW_PRIORITY_OBUF_SIZE) {
+            fprintf(stdout, "Sending as regular data\n");
+            ports[port]->outputqueue_low.push(tsp);
+            ports[port]->outputqueue_low_size += packet_size_bytes;
+        } else {
+            // Try to chop the packet
+            if (LNIC_PACKET_CHOPPED_SIZE + ports[port]->outputqueue_high_size < HIGH_PRIORITY_OBUF_SIZE) {
+                fprintf(stdout, "Sending as chopped\n");
+                tsp->amtwritten = LNIC_PACKET_CHOPPED_SIZE / sizeof(uint64_t);
+                *((uint8_t*)tsp->dat + ETHER_HEADER_SIZE + IP_HEADER_SIZE) |= LNIC_CHOP_FLAG_MASK;
+                ports[port]->outputqueue_high.push(tsp);
+                ports[port]->outputqueue_high_size += LNIC_PACKET_CHOPPED_SIZE;
+
+            } else {
+                // TODO: We should really drop the lowest priority packet sometimes, not always the newly arrived packet
+                fprintf(stdout, "Both queues full for chopped packet on port %d, dropping\n", port);
+            }
+        }
+    } else if ((is_data && is_chop) || (!is_data && !is_chop)) {
+        // Chopped data or control, send to high priority output queue
+        if (packet_size_bytes + ports[port]->outputqueue_high_size < HIGH_PRIORITY_OBUF_SIZE) {
+            fprintf(stdout, "Sending as control\n");
+            ports[port]->outputqueue_high.push(tsp);
+            ports[port]->outputqueue_high_size += packet_size_bytes;
+        } else {
+            fprintf(stdout, "High priority queue for port %d full, dropping packet\n", port);
+        }
+    } else {
+        fprintf(stdout, "Invalid combination: Chopped control packet. Dropping.\n");
+        // Chopped control packet. This shouldn't be possible.
+    }
+    fprintf(stdout, "\n");
 }
 
 static void simplify_frac(int n, int d, int *nn, int *dd)
@@ -216,24 +335,29 @@ static void simplify_frac(int n, int d, int *nn, int *dd)
 int main (int argc, char *argv[]) {
     int bandwidth;
 
-    if (argc < 4) {
+    if (argc < 6) {
         // if insufficient args, error out
-        fprintf(stdout, "usage: ./switch LINKLATENCY SWITCHLATENCY BANDWIDTH\n");
+        fprintf(stdout, "usage: ./switch LINKLATENCY SWITCHLATENCY BANDWIDTH HIGH_PRIORITY_OBUF_SIZE LOW_PRIORITY_OBUF_SIZE\n");
         fprintf(stdout, "insufficient args provided\n.");
         fprintf(stdout, "LINKLATENCY and SWITCHLATENCY should be provided in cycles.\n");
         fprintf(stdout, "BANDWIDTH should be provided in Gbps\n");
+        fprintf(stdout, "OBUF SIZES should be provided in bytes.\n");
         exit(1);
     }
 
     LINKLATENCY = atoi(argv[1]);
     switchlat = atoi(argv[2]);
     bandwidth = atoi(argv[3]);
+    HIGH_PRIORITY_OBUF_SIZE = atoi(argv[4]);
+    LOW_PRIORITY_OBUF_SIZE = atoi(argv[5]);
 
     simplify_frac(bandwidth, 200, &throttle_numer, &throttle_denom);
 
     fprintf(stdout, "Using link latency: %d\n", LINKLATENCY);
     fprintf(stdout, "Using switching latency: %d\n", SWITCHLATENCY);
     fprintf(stdout, "BW throttle set to %d/%d\n", throttle_numer, throttle_denom);
+    fprintf(stdout, "High priority obuf size: %d\n", HIGH_PRIORITY_OBUF_SIZE);
+    fprintf(stdout, "Low priority obuf size: %d\n", LOW_PRIORITY_OBUF_SIZE);
 
     if ((LINKLATENCY % 7) != 0) {
         // if invalid link latency, error out.

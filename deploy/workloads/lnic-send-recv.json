@@ -1,0 +1,8 @@
+{
+	"benchmark_name": "lnic-send-recv",
+	"common_simulation_outputs": [
+		"uartlog"
+	],
+	"common_bootbinary": "../../../../../software/firemarshal/lnic-workloads/lnic-send-recv/lnic-send-recv.riscv",
+	"common_rootfs": "../../../../../software/firemarshal/wlutil/dummy.rootfs"
+}

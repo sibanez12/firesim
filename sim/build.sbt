@@ -38,7 +38,7 @@ lazy val chipyard      = ProjectRef(chipyardDir, "chipyard")
 lazy val chisel        = ProjectRef(chipyardDir, "chisel")
 lazy val rocketchip    = ProjectRef(chipyardDir, "rocketchip")
 lazy val barstools     = ProjectRef(chipyardDir, "barstoolsMacros")
-lazy val icenet        = ProjectRef(chipyardDir, "icenet")
+lazy val lnic          = ProjectRef(chipyardDir, "lnic")
 lazy val testchipip    = ProjectRef(chipyardDir, "testchipip")
 lazy val sifive_blocks = ProjectRef(chipyardDir, "sifive_blocks")
 lazy val firechip      = ProjectRef(chipyardDir, "firechip")
@@ -60,7 +60,7 @@ lazy val midas = (project in file("midas"))
   )
 
 lazy val firesimLib = (project in file("firesim-lib"))
-  .settings(commonSettings).dependsOn(midas, icenet, testchipip, sifive_blocks)
+  .settings(commonSettings).dependsOn(midas, lnic, testchipip, sifive_blocks)
 
 // Contains example targets, like the MIDAS examples, and FASED tests
 lazy val firesim    = (project in file("."))

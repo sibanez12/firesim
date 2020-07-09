@@ -21,31 +21,25 @@ serial_t::serial_t(simif_t* sim, const std::vector<std::string>& args, SERIALBRI
         if (arg.find("+fesvr-step-size=") == 0) {
             step_size = atoi(arg.c_str()+17);
         }
-        if (arg.find(prog_arg) == 0)
-        {
-          std::string clean_target_args = const_cast<char*>(arg.c_str()) + prog_arg.length();
+        if (arg.find(prog_arg) == 0) {
+            std::string clean_target_args = const_cast<char*>(arg.c_str()) + prog_arg.length();
 
-          std::istringstream ss(clean_target_args);
-          std::string token;
-          while(std::getline(ss, token, ' ')) {
-            args_vec.push_back(token);
-            argc_count = argc_count + 1;
-  	  }
-        }
-        else if (arg.find(std::string("+prog")) == 0)
-        {
-          //Eliminate arguments for other fesvrs
-        }
-        else
-        {
+            std::istringstream ss(clean_target_args);
+            std::string token;
+            while(std::getline(ss, token, '^')) {
+                args_vec.push_back(token);
+                argc_count = argc_count + 1;
+  	        }
+        } else if (arg.find(std::string("+prog")) == 0) {
+          // Eliminate arguments for other fesvrs
+        } else {
             args_vec.push_back(arg);
             argc_count = argc_count + 1;
         }
     }
 
     argv_arr = new char*[args_vec.size()];
-    for(size_t i = 0; i < args_vec.size(); ++i)
-    {
+    for(size_t i = 0; i < args_vec.size(); ++i) {
         (argv_arr)[i] = new char[(args_vec)[i].size() + 1];
         std::strcpy((argv_arr)[i], (args_vec)[i].c_str());
     }

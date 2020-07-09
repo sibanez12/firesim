@@ -8,6 +8,39 @@ class UserTopologies(object):
     """ A class that just separates out user-defined/configurable topologies
     from the rest of the boilerplate in FireSimTopology() """
 
+    def lnic_clos_m_n_r(self, m, n, r):
+        rootswitches = [FireSimSwitchNode() for x in range(m)]
+        self.roots = rootswitches
+        leafswitches = [FireSimSwitchNode() for x in range(r)]
+        servers = [[FireSimServerNode() for x in range(n)] for y in range(r)]
+        for rswitch in rootswitches:
+            rswitch.add_downlinks(leafswitches)
+
+        for leafswitch, servergroup in zip(leafswitches, servers):
+            leafswitch.add_downlinks(servergroup)
+
+        def custom_mapper(fsim_topol_with_passes):
+            for i, rswitch in enumerate(rootswitches):
+                fsim_topol_with_passes.run_farm.m4_16s[i].add_switch(rswitch)
+
+            for j, lswitch in enumerate(leafswitches):
+                fsim_topol_with_passes.run_farm.f1_4s[j].add_switch(lswitch)
+                for sim in servers[j]:
+                    fsim_topol_with_passes.run_farm.f1_4s[j].add_simulation(sim)
+
+        self.custom_mapper = custom_mapper
+    
+    def lnic_clos_2_2_2(self):
+        """
+        2 root switches, 2 leaf switches, 2 links to nodes from each leaf switch.
+        Requires 2 m4.16xlarges and 2 f1.4xlarges
+        Uses a regular image, not supernodes.
+        """
+        self.lnic_clos_m_n_r(2, 2, 2)
+    
+    def lnic_clos_2_2_3(self):
+        self.lnic_clos_m_n_r(2, 2, 3)
+
     def clos_m_n_r(self, m, n, r):
         """ DO NOT USE THIS DIRECTLY, USE ONE OF THE INSTANTIATIONS BELOW. """
         """ Clos topol where:
@@ -199,6 +232,53 @@ class UserTopologies(object):
         for root in self.roots:
             root.add_downlinks(level2switches)
 
+        for l2switchNo in range(len(level2switches)):
+            level2switches[l2switchNo].add_downlinks(servers[l2switchNo])
+    
+    def lnic_4xlarge_4config(self):
+        # Use 2 f1.4xlarge instances to host 4 total nanopu's
+        self.roots = [FireSimSwitchNode()]
+        level2switches = [FireSimSwitchNode() for x in range(2)]
+        servers = [[FireSimServerNode() for y in range(2)] for x in range(2)]
+
+        for root in self.roots:
+            root.add_downlinks(level2switches)
+        
+        for l2switchNo in range(len(level2switches)):
+            level2switches[l2switchNo].add_downlinks(servers[l2switchNo])
+
+    def lnic_2xlarge_supernode_4config(self):
+        # Use 1 f1.2xlarge instance to host a single supernode with 4 total nanopu's
+        self.roots = [FireSimSwitchNode()]
+        servers = [FireSimSuperNodeServerNode()] + [FireSimDummyServerNode() for x in range(3)]
+        self.roots[0].add_downlinks(servers)
+
+    def lnic_4xlarge_supernode_16config(self):
+        # Use 2 f1.4xlarge instances to host 4 supernodes with 16 total nanopu's
+        # This is the smallest configuration that tests all 3 network connection types
+        # (same machine and same fpga, same machine but different fpga, and different machines)
+        self.roots = [FireSimSwitchNode()]
+        level2switches = [FireSimSwitchNode() for x in range(2)]
+        servers = [UserTopologies.supernode_flatten([[FireSimSuperNodeServerNode(), FireSimDummyServerNode(), FireSimDummyServerNode(), FireSimDummyServerNode()] for y in range(2)]) for x in range(2)]
+
+        for root in self.roots:
+            root.add_downlinks(level2switches)
+        
+        for l2switchNo in range(len(level2switches)):
+            level2switches[l2switchNo].add_downlinks(servers[l2switchNo])
+
+    def lnic_4xlarge_supernode_32config(self):
+        # Use 4 f1.4xlarge instances to host 8 supernodes with 32 total nanopu's
+        # With our current spot limit at 10 and one spot instance used for an m4 instance,
+        # this is the largest simulation we can currently run
+        # TODO: Set up a clos topology
+        self.roots = [FireSimSwitchNode()]
+        level2switches = [FireSimSwitchNode() for x in range(4)]
+        servers = [UserTopologies.supernode_flatten([[FireSimSuperNodeServerNode(), FireSimDummyServerNode(), FireSimDummyServerNode(), FireSimDummyServerNode()] for y in range(2)]) for x in range(4)]
+
+        for root in self.roots:
+            root.add_downlinks(level2switches)
+        
         for l2switchNo in range(len(level2switches)):
             level2switches[l2switchNo].add_downlinks(servers[l2switchNo])
 
