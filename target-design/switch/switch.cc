@@ -134,6 +134,7 @@ for (int port = 0; port < NUMPORTS; port++) {
             if (!(current_port->input_in_progress)) {
                 sp = (switchpacket*)calloc(sizeof(switchpacket), 1);
                 current_port->input_in_progress = sp;
+                fprintf(stdout, "new flit starting at %#lx with token %d of %d\n", flit, tokenno, NUM_TOKENS);
 
                 // here is where we inject switching latency. this is min port-to-port latency
                 sp->timestamp = this_iter_cycles_start + tokenno + SWITCHLATENCY;
@@ -143,6 +144,7 @@ for (int port = 0; port < NUMPORTS; port++) {
 
             sp->dat[sp->amtwritten++] = flit;
             if (is_last_flit(input_port_buf, tokenno)) {
+                fprintf(stdout, "last flit ending at %#lx with token %d of %d\n", flit, tokenno, NUM_TOKENS);
                 current_port->input_in_progress = NULL;
                 if (current_port->push_input(sp)) {
                     printf("packet timestamp: %ld, len: %ld, sender: %d\n",
@@ -201,13 +203,21 @@ while (!pqueue.empty()) {
     pcpp::Packet parsed_packet(&raw_packet);
     pcpp::EthLayer* ethernet_layer = parsed_packet.getLayerOfType<pcpp::EthLayer>();
     pcpp::IPv4Layer* ip_layer = parsed_packet.getLayerOfType<pcpp::IPv4Layer>();
-    if (ethernet_layer == NULL || ip_layer == NULL) {
-        if (ethernet_layer == NULL) {
-            fprintf(stdout, "NULL ethernet layer\n");
+    if (ethernet_layer == NULL) {
+        fprintf(stdout, "NULL ethernet layer\n");
+        free(tsp);
+        continue;
+    }
+    if (ip_layer == NULL) {
+        fprintf(stdout, "NULL ip layer from %d with amtread %d and amtwritten %d\n", tsp->sender, tsp->amtread, tsp->amtwritten);
+        if (ethernet_layer != NULL) {
+            fprintf(stdout, "Source MAC %s, dest MAC %s\n", ethernet_layer->getSourceMac().toString().c_str(), ethernet_layer->getDestMac().toString().c_str());
         }
-        if (ip_layer == NULL) {
-            fprintf(stdout, "NULL ip layer\n");
+        for (int i = 0; i < tsp->amtwritten; i++) {
+            fprintf(stdout, "%d: %#lx\n", i, __builtin_bswap64(tsp->dat[i]));
         }
+        free(tsp);
+        continue;
     } else {
         //fprintf(stdout, "Source MAC %s, dest MAC %s\n", ethernet_layer->getSourceMac().toString().c_str(), ethernet_layer->getDestMac().toString().c_str());
         fprintf(stdout, "Source IP %s, dest IP %s\n", ip_layer->getSrcIpAddress().toString().c_str(), ip_layer->getDstIpAddress().toString().c_str());
@@ -220,6 +230,7 @@ while (!pqueue.empty()) {
     uint16_t send_to_port = get_port_from_flit(switching_flit, 0);
     if (send_to_port == UNKNOWN_ADDRESS) {
         fprintf(stdout, "Packet with unknown destination address, dropping\n");
+        free(tsp);
         // Do nothing for a packet with an unknown destination address
     } else if (send_to_port == BROADCAST_ADJUSTED) {
 #define ADDUPLINK (NUMUPLINKS > 0 ? 1 : 0)
@@ -290,15 +301,28 @@ void send_with_priority(uint16_t port, switchpacket* tsp) {
         } else {
             // Try to chop the packet
             if (LNIC_PACKET_CHOPPED_SIZE + ports[port]->outputqueue_high_size < HIGH_PRIORITY_OBUF_SIZE) {
-                fprintf(stdout, "Sending as chopped\n");
-                tsp->amtwritten = LNIC_PACKET_CHOPPED_SIZE / sizeof(uint64_t);
-                *((uint8_t*)tsp->dat + ETHER_HEADER_SIZE + IP_HEADER_SIZE) |= LNIC_CHOP_FLAG_MASK;
-                ports[port]->outputqueue_high.push(tsp);
+                fprintf(stdout, "Sending as chopped with amtread %d, old amtwritten %d, and new amtwritten %d\n", tsp->amtread, tsp->amtwritten, LNIC_PACKET_CHOPPED_SIZE / sizeof(uint64_t));
+                switchpacket * tsp2 = (switchpacket*)calloc(sizeof(switchpacket), 1);
+                tsp2->timestamp = tsp->timestamp;
+                tsp2->amtwritten = LNIC_PACKET_CHOPPED_SIZE / sizeof(uint64_t);
+                tsp2->amtread = tsp->amtread;
+                tsp2->sender = tsp->sender;
+                memcpy(tsp2->dat, tsp->dat, ETHER_HEADER_SIZE + IP_HEADER_SIZE + LNIC_HEADER_SIZE);
+                uint64_t lnic_flag_offset = (uint64_t)tsp2->dat + ETHER_HEADER_SIZE + IP_HEADER_SIZE;
+                fprintf(stdout, "Old flags: %#lx\n", *(uint8_t*)lnic_flag_offset);
+                *(uint8_t*)(lnic_flag_offset) |= LNIC_CHOP_FLAG_MASK;
+                fprintf(stdout, "New flags: %#lx\n", *(uint8_t*)lnic_flag_offset);
+                free(tsp);
+                for (int i = 0; i < tsp2->amtwritten; i++) {
+                    fprintf(stdout, "%d: %#lx\n", i, __builtin_bswap64(tsp2->dat[i]));
+                }
+                ports[port]->outputqueue_high.push(tsp2);
                 ports[port]->outputqueue_high_size += LNIC_PACKET_CHOPPED_SIZE;
 
             } else {
                 // TODO: We should really drop the lowest priority packet sometimes, not always the newly arrived packet
                 fprintf(stdout, "Both queues full for chopped packet on port %d, dropping\n", port);
+                free(tsp);
             }
         }
     } else if ((is_data && is_chop) || (!is_data && !is_chop)) {
@@ -309,9 +333,11 @@ void send_with_priority(uint16_t port, switchpacket* tsp) {
             ports[port]->outputqueue_high_size += packet_size_bytes;
         } else {
             fprintf(stdout, "High priority queue for port %d full, dropping packet\n", port);
+            free(tsp);
         }
     } else {
         fprintf(stdout, "Invalid combination: Chopped control packet. Dropping.\n");
+        free(tsp);
         // Chopped control packet. This shouldn't be possible.
     }
     fprintf(stdout, "\n");
