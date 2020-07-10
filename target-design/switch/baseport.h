@@ -78,6 +78,10 @@ int BasePort::push_input(switchpacket *sp)
         return 0;
     }
 
+    for (int i = 0; i < sp->amtwritten; i++) {
+        fprintf(stdout, "input flit %d: %#lx\n", i, __builtin_bswap64(sp->dat[i]));
+    }
+
     inputqueue.push(sp);
     return 1;
 }
@@ -150,10 +154,20 @@ void BasePort::write_flits_to_output() {
                 printf("packet timestamp: %ld, len: %ld, receiver: %d\n",
                         basetime + flitswritten, thispacket->amtwritten, _portNo);
             }
+
+            // Note that this assumes throttle will be 1 / 1
+            fprintf(stdout, "flitswritten is %d and amtwritten is %d\n", flitswritten, thispacket->amtwritten);
+            if (flitswritten + thispacket->amtwritten >= LINKLATENCY) {
+                fprintf(stdout, "breaking loop\n");
+                // If we're going to only end up writing part of a packet to the output buffer, we need to stop beforehand
+                // Nothing will be dropped here yet, but the next inbound packets could be dropped if the buffers fill up.
+                break;
+            }
             for (;(i < thispacket->amtwritten) && (flitswritten < LINKLATENCY); i++) {
                 write_last_flit(current_output_buf, flitswritten, i == (thispacket->amtwritten-1));
                 write_valid_flit(current_output_buf, flitswritten);
                 write_flit(current_output_buf, flitswritten, thispacket->dat[i]);
+                fprintf(stdout, "flit %d: %#lx is last %d written at %d\n", i, __builtin_bswap64(thispacket->dat[i]), (i == (thispacket->amtwritten-1)), flitswritten);
                 empty_buf = false;
 
                 if (!_throttle)
