@@ -274,6 +274,10 @@ void send_with_priority(uint16_t port, switchpacket* tsp) {
     uint16_t lnic_msg_len_bytes = *(uint16_t*)lnic_msg_len_bytes_offset;
     lnic_msg_len_bytes = __builtin_bswap16(lnic_msg_len_bytes);
     fprintf(stdout, "Lnic msg len bytes is %d\n", lnic_msg_len_bytes);
+
+    uint64_t lnic_src_context_offset = (uint64_t)tsp->dat + ETHER_HEADER_SIZE + IP_HEADER_SIZE + 1;
+    uint64_t lnic_dst_context_offset = (uint64_t)tsp->dat + ETHER_HEADER_SIZE + IP_HEADER_SIZE + 3;
+    fprintf(stdout, "lnic src context %d dst context %d\n", __builtin_bswap16(*(uint16_t*)lnic_src_context_offset), __builtin_bswap16(*(uint16_t*)lnic_dst_context_offset));
     fprintf(stdout, "True packet length (minux eth and ip) is %d\n", packet_size_bytes - ETHER_HEADER_SIZE - IP_HEADER_SIZE);
     std::string to_send = "Flags: ";
     to_send += (is_data ? "DATA " : "");
