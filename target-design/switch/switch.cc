@@ -102,6 +102,9 @@ uint64_t this_iter_cycles_start = 0;
 #define LNIC_PACKET_CHOPPED_SIZE   128 // Bytes, the minimum L-NIC packet size
 #define LNIC_HEADER_SIZE           30
 
+#define QUEUE_SIZE_LOG_INTERVAL 100 // 100 cycles between log interval points
+#define LOG_QUEUE_SIZE
+
 // These are both set by command-line arguments. Don't change them here.
 int HIGH_PRIORITY_OBUF_SIZE = 0;
 int LOW_PRIORITY_OBUF_SIZE = 0;
@@ -134,7 +137,6 @@ for (int port = 0; port < NUMPORTS; port++) {
             if (!(current_port->input_in_progress)) {
                 sp = (switchpacket*)calloc(sizeof(switchpacket), 1);
                 current_port->input_in_progress = sp;
-                fprintf(stdout, "new flit starting at %#lx with token %d of %d\n", flit, tokenno, NUM_TOKENS);
 
                 // here is where we inject switching latency. this is min port-to-port latency
                 sp->timestamp = this_iter_cycles_start + tokenno + SWITCHLATENCY;
@@ -144,7 +146,6 @@ for (int port = 0; port < NUMPORTS; port++) {
 
             sp->dat[sp->amtwritten++] = flit;
             if (is_last_flit(input_port_buf, tokenno)) {
-                fprintf(stdout, "last flit ending at %#lx with token %d of %d\n", flit, tokenno, NUM_TOKENS);
                 current_port->input_in_progress = NULL;
                 if (current_port->push_input(sp)) {
                     printf("packet timestamp: %ld, len: %ld, sender: %d\n",
@@ -218,10 +219,6 @@ while (!pqueue.empty()) {
         }
         free(tsp);
         continue;
-    } else {
-        //fprintf(stdout, "Source MAC %s, dest MAC %s\n", ethernet_layer->getSourceMac().toString().c_str(), ethernet_layer->getDestMac().toString().c_str());
-        fprintf(stdout, "Source IP %s, dest IP %s\n", ip_layer->getSrcIpAddress().toString().c_str(), ip_layer->getDstIpAddress().toString().c_str());
-        //fprintf(stdout, "Header length is %d\n", ip_layer->getHeaderLen());
     }
 
     int flit_offset_doublebytes = (ETHER_HEADER_SIZE + IP_DST_FIELD_OFFSET + IP_SUBNET_OFFSET) / sizeof(uint16_t);
@@ -249,6 +246,18 @@ while (!pqueue.empty()) {
         send_with_priority(send_to_port, tsp);
     }
 }
+
+// Log queue sizes if logging is enabled
+#ifdef LOG_QUEUE_SIZE
+if (this_iter_cycles_start % QUEUE_SIZE_LOG_INTERVAL == 0) {
+    fprintf(stdout, "&&CSV&&QueueSize,%ld", this_iter_cycles_start);
+    for (int i = 0; i < NUMPORTS; i++) {
+        fprintf(stdout, ",%d,%ld,%ld", i, ports[i]->outputqueue_high_size, ports[i]->outputqueue_low_size);
+    }
+    fprintf(stdout, "\n");
+}
+#endif
+
 // finally in parallel, flush whatever we can to the output queues based on timestamp
 
 #pragma omp parallel for
@@ -268,44 +277,29 @@ void send_with_priority(uint16_t port, switchpacket* tsp) {
     bool is_chop = lnic_header_flags & LNIC_CHOP_FLAG_MASK;
     uint64_t packet_size_bytes = tsp->amtwritten * sizeof(uint64_t);
     
-    //fprintf(stdout, "Packet info: header_flags %#lx is_data %d is_chop %d packet_size_bytes %d\n", lnic_header_flags, is_data, is_chop, packet_size_bytes);
-
     uint64_t lnic_msg_len_bytes_offset = (uint64_t)tsp->dat + ETHER_HEADER_SIZE + IP_HEADER_SIZE + LNIC_HEADER_MSG_LEN_OFFSET;
     uint16_t lnic_msg_len_bytes = *(uint16_t*)lnic_msg_len_bytes_offset;
     lnic_msg_len_bytes = __builtin_bswap16(lnic_msg_len_bytes);
-    fprintf(stdout, "Lnic msg len bytes is %d\n", lnic_msg_len_bytes);
 
     uint64_t lnic_src_context_offset = (uint64_t)tsp->dat + ETHER_HEADER_SIZE + IP_HEADER_SIZE + 1;
     uint64_t lnic_dst_context_offset = (uint64_t)tsp->dat + ETHER_HEADER_SIZE + IP_HEADER_SIZE + 3;
-    fprintf(stdout, "lnic src context %d dst context %d\n", __builtin_bswap16(*(uint16_t*)lnic_src_context_offset), __builtin_bswap16(*(uint16_t*)lnic_dst_context_offset));
-    fprintf(stdout, "True packet length (minux eth and ip) is %d\n", packet_size_bytes - ETHER_HEADER_SIZE - IP_HEADER_SIZE);
-    std::string to_send = "Flags: ";
-    to_send += (is_data ? "DATA " : "");
-    to_send += (is_ack ? "ACK " : "");
-    to_send += (is_nack ? "NACK " : "");
-    to_send += (is_pull ? "PULL " : "");
-    to_send += (is_chop ? "CHOP " : "");
-    fprintf(stdout, "%s Port: %d\n", to_send.c_str(), port);
-    fprintf(stdout, "High obuf at %d low obuf at %d\n", ports[port]->outputqueue_high_size, ports[port]->outputqueue_low_size);
 
     uint64_t packet_data_size = packet_size_bytes - ETHER_HEADER_SIZE - IP_HEADER_SIZE - LNIC_HEADER_SIZE;
     uint64_t packet_msg_words_offset = (uint64_t)tsp->dat + ETHER_HEADER_SIZE + IP_HEADER_SIZE + LNIC_HEADER_SIZE;
     uint64_t* packet_msg_words = (uint64_t*)packet_msg_words_offset;
-    for (int i = 0; i < packet_data_size / sizeof(uint64_t); i++) {
-        fprintf(stdout, "%d: %#lx\n", i, __builtin_bswap64(packet_msg_words[i]));
-    }
 
     if (is_data && !is_chop) {
         // Regular data, send to low priority queue or chop and send to high priority
         // queue if low priority queue is full.
         if (packet_size_bytes + ports[port]->outputqueue_low_size < LOW_PRIORITY_OBUF_SIZE) {
-            fprintf(stdout, "Sending as regular data\n");
             ports[port]->outputqueue_low.push(tsp);
             ports[port]->outputqueue_low_size += packet_size_bytes;
         } else {
             // Try to chop the packet
             if (LNIC_PACKET_CHOPPED_SIZE + ports[port]->outputqueue_high_size < HIGH_PRIORITY_OBUF_SIZE) {
-                fprintf(stdout, "Sending as chopped with amtread %d, old amtwritten %d, and new amtwritten %d\n", tsp->amtread, tsp->amtwritten, LNIC_PACKET_CHOPPED_SIZE / sizeof(uint64_t));
+#ifdef LOG_EVENTS
+                fprintf(stdout, "&&CSV&&Events,Chopped,%ld,%d\n", this_iter_cycles_start, port);
+#endif
                 switchpacket * tsp2 = (switchpacket*)calloc(sizeof(switchpacket), 1);
                 tsp2->timestamp = tsp->timestamp;
                 tsp2->amtwritten = LNIC_PACKET_CHOPPED_SIZE / sizeof(uint64_t);
@@ -313,30 +307,28 @@ void send_with_priority(uint16_t port, switchpacket* tsp) {
                 tsp2->sender = tsp->sender;
                 memcpy(tsp2->dat, tsp->dat, ETHER_HEADER_SIZE + IP_HEADER_SIZE + LNIC_HEADER_SIZE);
                 uint64_t lnic_flag_offset = (uint64_t)tsp2->dat + ETHER_HEADER_SIZE + IP_HEADER_SIZE;
-                fprintf(stdout, "Old flags: %#lx\n", *(uint8_t*)lnic_flag_offset);
                 *(uint8_t*)(lnic_flag_offset) |= LNIC_CHOP_FLAG_MASK;
-                fprintf(stdout, "New flags: %#lx\n", *(uint8_t*)lnic_flag_offset);
                 free(tsp);
-                for (int i = 0; i < tsp2->amtwritten; i++) {
-                    fprintf(stdout, "%d: %#lx\n", i, __builtin_bswap64(tsp2->dat[i]));
-                }
                 ports[port]->outputqueue_high.push(tsp2);
                 ports[port]->outputqueue_high_size += LNIC_PACKET_CHOPPED_SIZE;
 
             } else {
                 // TODO: We should really drop the lowest priority packet sometimes, not always the newly arrived packet
-                fprintf(stdout, "Both queues full for chopped packet on port %d, dropping\n", port);
+#ifdef LOG_EVENTS
+                fprintf(stdout, "&&CSV&&Events,DroppedBothFull,%ld,%d\n", this_iter_cycles_start, port);
+#endif
                 free(tsp);
             }
         }
     } else if ((is_data && is_chop) || (!is_data && !is_chop)) {
         // Chopped data or control, send to high priority output queue
         if (packet_size_bytes + ports[port]->outputqueue_high_size < HIGH_PRIORITY_OBUF_SIZE) {
-            fprintf(stdout, "Sending as control\n");
             ports[port]->outputqueue_high.push(tsp);
             ports[port]->outputqueue_high_size += packet_size_bytes;
         } else {
-            fprintf(stdout, "High priority queue for port %d full, dropping packet\n", port);
+#ifdef LOG_EVENTS
+            fprintf(stdout, "&&CSV&&Events,DroppedControlFull,%ld,%d\n", this_iter_cycles_start, port);
+#endif
             free(tsp);
         }
     } else {

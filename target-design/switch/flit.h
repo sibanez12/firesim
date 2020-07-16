@@ -95,9 +95,6 @@ uint16_t get_port_from_flit(uint64_t flit, int current_port) {
         // this has been mapped to "any uplink", so pick one
         int randval = rand() % NUMUPLINKS;
         sendport = randval + NUMDOWNLINKS;
-        //fprintf(stdout, "sending to random uplink.\n");
-        //fprintf(stdout, "port: %04x\n", sendport);
     }
-    //printf("port: %04x\n", sendport);
     return sendport;
 }
