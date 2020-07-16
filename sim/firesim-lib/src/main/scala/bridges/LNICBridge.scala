@@ -38,6 +38,8 @@ object LNICBridge {
     nicIO.nic_mac_addr := ep.io.nic_mac_addr
     nicIO.switch_mac_addr := ep.io.switch_mac_addr
     nicIO.nic_ip_addr := ep.io.nic_ip_addr
+    nicIO.timeout_cycles := ep.io.timeout_cycles
+    nicIO.rtt_pkts := ep.io.rtt_pkts
 
     ep
   }
@@ -231,22 +233,32 @@ class LNICBridgeModule(implicit p: Parameters) extends BridgeModule[HostPortIO[N
     target.nic_mac_addr := 0.U
     target.switch_mac_addr := 0.U
     target.nic_ip_addr := 0.U
+    target.timeout_cycles := 0.U
+    target.rtt_pkts := 0.U
   } else {
     val nic_mac_addr_reg_upper = Reg(UInt(32.W))
     val nic_mac_addr_reg_lower = Reg(UInt(32.W))
     val switch_mac_addr_reg_upper = Reg(UInt(32.W))
     val switch_mac_addr_reg_lower = Reg(UInt(32.W))
     val nic_ip_addr_reg = Reg(UInt(32.W))
+    val timeout_cycles_reg_upper = Reg(UInt(32.W))
+    val timeout_cycles_reg_lower = Reg(UInt(32.W))
+    val rtt_pkts_reg = Reg(UInt(32.W))
 
     target.nic_mac_addr := Cat(nic_mac_addr_reg_upper, nic_mac_addr_reg_lower)
     target.switch_mac_addr := Cat(switch_mac_addr_reg_upper, switch_mac_addr_reg_lower)
     target.nic_ip_addr := nic_ip_addr_reg
+    target.timeout_cycles := Cat(timeout_cycles_reg_upper, timeout_cycles_reg_lower)
+    target.rtt_pkts := rtt_pkts_reg
 
     attach(nic_mac_addr_reg_upper, "nic_mac_addr_upper", WriteOnly)
     attach(nic_mac_addr_reg_lower, "nic_mac_addr_lower", WriteOnly)
     attach(switch_mac_addr_reg_upper, "switch_mac_addr_upper", WriteOnly)
     attach(switch_mac_addr_reg_lower, "switch_mac_addr_lower", WriteOnly)
     attach(nic_ip_addr_reg, "nic_ip_addr", WriteOnly)
+    attach(timeout_cycles_reg_upper, "timeout_cycles_upper", WriteOnly)
+    attach(timeout_cycles_reg_lower, "timeout_cycles_lower", WriteOnly)
+    attach(rtt_pkts_reg, "rtt_pkts", WriteOnly)
   }
 
   genROReg(!tFire, "done")

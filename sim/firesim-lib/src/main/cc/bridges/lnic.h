@@ -30,6 +30,8 @@ class lnic_t: public bridge_driver_t
         uint64_t nic_mac_lendian;
         uint64_t switch_mac_lendian;
         uint32_t nic_ip_lendian;
+        uint64_t timeout_cycles_lendian;
+        uint16_t rtt_pkts_lendian;
         
         char * pcis_read_bufs[2];
         char * pcis_write_bufs[2];

@@ -60,6 +60,8 @@ lnic_t::lnic_t(simif_t *sim, std::vector<std::string> &args,
     this->nic_mac_lendian = 0;
     this->switch_mac_lendian = 0;
     this->nic_ip_lendian = 0;
+    this->timeout_cycles_lendian = 0;
+    this->rtt_pkts_lendian = 0;
 
     this->LINKLATENCY = 0;
     this->dma_addr = dma_addr;
@@ -74,6 +76,8 @@ lnic_t::lnic_t(simif_t *sim, std::vector<std::string> &args,
     std::string nic_mac_addr_arg = std::string("+nic_mac_addr") + num_equals;
     std::string switch_mac_addr_arg = std::string("+switch_mac_addr") + num_equals;
     std::string nic_ip_addr_arg = std::string("+nic_ip_addr") + num_equals;
+    std::string timeout_cycles_arg = std::string("+timeout_cycles") + num_equals;
+    std::string rtt_pkts_arg = std::string("+rtt_pkts") + num_equals;
 
     std::string netbw_arg = std::string("+netbw") + num_equals;
     std::string netburst_arg = std::string("+netburst") + num_equals;
@@ -142,6 +146,14 @@ lnic_t::lnic_t(simif_t *sim, std::vector<std::string> &args,
             } else {
                 fprintf(stderr, "INVALID NIC IP ADDRESS SUPPLIED WITH +nic_ip_addrN=\n");
             }
+        }
+        if (arg.find(timeout_cycles_arg) == 0) {
+            char *str = const_cast<char*>(arg.c_str()) + timeout_cycles_arg.length();
+            this->timeout_cycles_lendian = atoll(str);
+        }
+        if (arg.find(rtt_pkts_arg) == 0) {
+            char* str = const_cast<char*>(arg.c_str()) + rtt_pkts_arg.length();
+            this->rtt_pkts_lendian = atoi(str);
         }
         if (arg.find(netbw_arg) == 0) {
             char *str = const_cast<char*>(arg.c_str()) + netbw_arg.length();
@@ -234,6 +246,8 @@ void lnic_t::init() {
     uint64_t nic_mac_bigendian = __builtin_bswap64(nic_mac_lendian) >> 16;
     uint64_t switch_mac_bigendian = __builtin_bswap64(switch_mac_lendian) >> 16;
     uint32_t nic_ip_bigendian = __builtin_bswap32(nic_ip_lendian);
+    uint64_t timeout_cycles_bigendian = __builtin_bswap64(timeout_cycles_lendian);
+    uint16_t rtt_pkts_bigendian = __builtin_bswap16(rtt_pkts_lendian);
     printf("Writing switch mac old %#lx new %#lx\n", switch_mac_lendian, switch_mac_bigendian);
 
     write(mmio_addrs->nic_mac_addr_upper, (nic_mac_bigendian >> 32) & 0xFFFFFFFF);
@@ -241,6 +255,9 @@ void lnic_t::init() {
     write(mmio_addrs->switch_mac_addr_upper, (switch_mac_bigendian >> 32) & 0xFFFFFFFF);
     write(mmio_addrs->switch_mac_addr_lower, switch_mac_bigendian & 0xFFFFFFFF);
     write(mmio_addrs->nic_ip_addr, nic_ip_bigendian);
+    write(mmio_addrs->timeout_cycles_upper, (timeout_cycles_bigendian >> 32) & 0xFFFFFFFF);
+    write(mmio_addrs->timeout_cycles_lower, timeout_cycles_bigendian & 0xFFFFFFFF);
+    write(mmio_addrs->rtt_pkts, rtt_pkts_bigendian);
 
     uint32_t output_tokens_available = read(mmio_addrs->outgoing_count);
     uint32_t input_token_capacity = SIMLATENCY_BT - read(mmio_addrs->incoming_count);
