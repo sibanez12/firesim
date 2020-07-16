@@ -104,6 +104,7 @@ uint64_t this_iter_cycles_start = 0;
 
 #define QUEUE_SIZE_LOG_INTERVAL 100 // 100 cycles between log interval points
 #define LOG_QUEUE_SIZE
+#define LOG_EVENTS
 
 // These are both set by command-line arguments. Don't change them here.
 int HIGH_PRIORITY_OBUF_SIZE = 0;
@@ -250,11 +251,20 @@ while (!pqueue.empty()) {
 // Log queue sizes if logging is enabled
 #ifdef LOG_QUEUE_SIZE
 if (this_iter_cycles_start % QUEUE_SIZE_LOG_INTERVAL == 0) {
-    fprintf(stdout, "&&CSV&&QueueSize,%ld", this_iter_cycles_start);
+    bool non_zero_buffer = false;
     for (int i = 0; i < NUMPORTS; i++) {
-        fprintf(stdout, ",%d,%ld,%ld", i, ports[i]->outputqueue_high_size, ports[i]->outputqueue_low_size);
+        if (ports[i]->outputqueue_high_size != 0 || ports[i]->outputqueue_low_size != 0) {
+            non_zero_buffer = true;
+            break;
+        }
     }
-    fprintf(stdout, "\n");
+    if (non_zero_buffer) {
+        fprintf(stdout, "&&CSV&&QueueSize,%ld", this_iter_cycles_start);
+        for (int i = 0; i < NUMPORTS; i++) {
+            fprintf(stdout, ",%d,%ld,%ld", i, ports[i]->outputqueue_high_size, ports[i]->outputqueue_low_size);
+        }
+        fprintf(stdout, "\n");
+    }
 }
 #endif
 
@@ -336,7 +346,6 @@ void send_with_priority(uint16_t port, switchpacket* tsp) {
         free(tsp);
         // Chopped control packet. This shouldn't be possible.
     }
-    fprintf(stdout, "\n");
 }
 
 static void simplify_frac(int n, int d, int *nn, int *dd)
