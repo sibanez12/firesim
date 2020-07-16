@@ -37,7 +37,8 @@ class FireSimTopologyWithPasses:
                  defaulttraceenable, defaulttraceselect, defaulttracestart, defaulttraceend,
                  defaulttraceoutputformat,
                  defaultautocounterreadrate, terminateoncompletion,
-                 defaultzerooutdram, high_priority_obuf_size, low_priority_obuf_size):
+                 defaultzerooutdram, high_priority_obuf_size, low_priority_obuf_size,
+                 wait_for_all_sims):
         self.passes_used = []
         self.user_topology_name = user_topology_name
         self.no_net_num_nodes = no_net_num_nodes
@@ -58,6 +59,7 @@ class FireSimTopologyWithPasses:
         self.defaultautocounterreadrate = defaultautocounterreadrate
         self.defaultzerooutdram = defaultzerooutdram
         self.terminateoncompletion = terminateoncompletion
+        self.wait_for_all_sims = wait_for_all_sims
 
         self.high_priority_obuf_size = high_priority_obuf_size
         self.low_priority_obuf_size = low_priority_obuf_size
@@ -611,7 +613,8 @@ class FireSimTopologyWithPasses:
                 rootLogger.debug("jobs complete dict " + str(jobs_complete_dict))
                 rootLogger.debug("global status: " + str(global_status))
 
-                if teardown_required and any(global_status):
+                if (not self.wait_for_all_sims and teardown_required and any(global_status)) or \
+                    (self.wait_for_all_sims and teardown_required and all(global_status)):
                     # in this case, do the teardown, then call exec again, then exit
                     rootLogger.info("Teardown required, manually tearing down...")
                     # do not disconnect nbds, because we may need them for copying

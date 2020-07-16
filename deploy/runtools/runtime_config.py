@@ -299,6 +299,7 @@ class InnerRuntimeConfiguration:
         # an extra tag to differentiate workloads with the same name in results names
         self.suffixtag = runtime_dict['workload']['suffixtag'] if 'suffixtag' in runtime_dict['workload'] else ""
         self.terminateoncompletion = runtime_dict['workload']['terminateoncompletion'] == "yes"
+        self.wait_for_all_sims = runtime_dict['workload']['wait_for_all_sims'] == "yes"
 
     def __str__(self):
         return pprint.pformat(vars(self))
@@ -351,7 +352,8 @@ class RuntimeConfig:
             self.innerconf.autocounter_readrate, self.innerconf.terminateoncompletion,
             self.innerconf.zerooutdram,
             self.innerconf.high_priority_obuf_size,
-            self.innerconf.low_priority_obuf_size)
+            self.innerconf.low_priority_obuf_size,
+            self.innerconf.wait_for_all_sims)
 
     def launch_run_farm(self):
         """ directly called by top-level launchrunfarm command. """
