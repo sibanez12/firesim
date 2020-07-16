@@ -159,7 +159,7 @@ class FireSimServerNode(FireSimNode):
     def __init__(self, server_hardware_config=None, server_link_latency=None,
                  server_bw_max=None, server_profile_interval=None,
                  trace_enable=None, trace_select=None, trace_start=None, trace_end=None, trace_output_format=None, autocounter_readrate=None,
-                 zerooutdram=None):
+                 zerooutdram=None, timeout_cycles=None, rtt_pkts=None):
         super(FireSimServerNode, self).__init__()
         self.server_hardware_config = server_hardware_config
         self.server_link_latency = server_link_latency
@@ -172,6 +172,8 @@ class FireSimServerNode(FireSimNode):
         self.trace_output_format = trace_output_format
         self.autocounter_readrate = autocounter_readrate
         self.zerooutdram = zerooutdram
+        self.timeout_cycles = timeout_cycles
+        self.rtt_pkts = rtt_pkts
         self.job = None
         self.server_id_internal = FireSimServerNode.SERVERS_CREATED
         FireSimServerNode.SERVERS_CREATED += 1
@@ -193,6 +195,12 @@ class FireSimServerNode(FireSimNode):
     
     def get_ip_address(self):
         return self.ip_address
+    
+    def get_timeout_cycles(self):
+        self.timeout_cycles
+    
+    def get_rtt_pkts(self):
+        self.rtt_pkts
 
     def process_qcow2_rootfses(self, rootfses_list):
         """ Take in list of all rootfses on this node. For the qcow2 ones, find
@@ -244,6 +252,8 @@ class FireSimServerNode(FireSimNode):
         all_nic_macs = [self.get_mac_address()]
         all_switch_macs = ["08:55:66:77:88:08"]
         all_nic_ips = [self.get_ip_address()]
+        all_timeout_cycles = [self.get_timeout_cycles()]
+        all_rtt_pkts = [self.get_rtt_pkts()]
 
         all_rootfses = self.process_qcow2_rootfses([self.get_rootfs_name()])
         all_linklatencies = [self.server_link_latency]
@@ -255,6 +265,7 @@ class FireSimServerNode(FireSimNode):
 
         runcommand = self.server_hardware_config.get_boot_simulation_command(
             slotno, all_nic_macs, all_switch_macs, all_nic_ips,
+            all_timeout_cycles, all_rtt_pkts,
             all_rootfses, all_linklatencies, all_maxbws,
             self.server_profile_interval, all_bootbins, all_progargs, self.trace_enable,
             self.trace_select, self.trace_start, self.trace_end, self.trace_output_format,
@@ -446,6 +457,12 @@ class FireSimSuperNodeServerNode(FireSimServerNode):
     
     def supernode_get_sibling_ip_address(self, siblingindex):
         return self.supernode_get_sibling(siblingindex).get_ip_address()
+    
+    def supernode_get_sibling_timeout_cycles(self, siblingindex):
+        return self.supernode_get_sibling(siblingindex).get_timeout_cycles()
+    
+    def supernode_get_sibling_rtt_pkts(self, siblingindex):
+        return self.supernode_get_sibling(siblingindex).get_rtt_pkts()
 
     def supernode_get_sibling_rootfs(self, siblingindex):
         """ return the sibling's rootfs for supernode mode.
@@ -484,6 +501,8 @@ class FireSimSuperNodeServerNode(FireSimServerNode):
         all_nic_macs = [self.get_mac_address()] + [self.supernode_get_sibling_mac_address(x) for x in range(1, num_siblings)]
         all_switch_macs = ["08:55:66:77:88:08"]
         all_nic_ips = [self.get_ip_address()] + [self.supernode_get_sibling_ip_address(x) for x in range(1, num_siblings)]
+        all_timeout_cycles = [self.get_timeout_cycles()] + [self.supernode_get_sibling_timeout_cycles(x) for x in range(1, num_siblings)]
+        all_rtt_pkts = [self.get_rtt_pkts()] + [self.supernode_get_sibling_rtt_pkts(x) for x in range(1, num_siblings)]
 
         all_rootfses = self.process_qcow2_rootfses([self.get_rootfs_name()] + [self.supernode_get_sibling_rootfs(x) for x in range(1, num_siblings)])
         all_bootbins = [self.get_bootbin_name()] + [self.supernode_get_sibling_bootbin(x) for x in range(1, num_siblings)]
@@ -498,6 +517,7 @@ class FireSimSuperNodeServerNode(FireSimServerNode):
 
         runcommand = self.server_hardware_config.get_boot_simulation_command(
             slotno, all_nic_macs, all_switch_macs, all_nic_ips,
+            all_timeout_cycles, all_rtt_pkts,
             all_rootfses, all_linklatencies, all_maxbws,
             self.server_profile_interval, all_bootbins, all_progargs, self.trace_enable,
             self.trace_select, self.trace_start, self.trace_end, self.trace_output_format,

@@ -89,6 +89,7 @@ class RuntimeHWConfig:
 
     def get_boot_simulation_command(self, slotid, all_nic_macs,
                                               all_switch_macs, all_nic_ips,
+                                              all_timeout_cycles, all_rtt_pkts,
                                               all_rootfses, all_linklatencies,
                                               all_netbws, profile_interval,
                                               all_bootbinaries, all_progargs, trace_enable,
@@ -126,6 +127,8 @@ class RuntimeHWConfig:
         command_nic_macs = array_to_plusargs(all_nic_macs, "+nic_mac_addr")
         command_switch_macs = array_to_plusargs(all_switch_macs, "+switch_mac_addr")
         command_nic_ips = array_to_plusargs(all_nic_ips, "+nic_ip_addr")
+        command_timeout_cycles = array_to_plusargs(all_timeout_cycles, "+timeout_cycles")
+        command_rtt_pkts = array_to_plusargs(all_rtt_pkts, "+rtt_pkts")
 
         command_rootfses = array_to_plusargs(all_rootfses, "+blkdev")
         command_linklatencies = array_to_plusargs(all_linklatencies, "+linklatency")
@@ -149,11 +152,13 @@ class RuntimeHWConfig:
         dwarf_file_name = "+dwarf-file-name0=" + all_bootbinaries[0] + "-dwarf"
 
         # TODO: supernode support (tracefile0, trace-select0.. etc)
-        basecommand = """screen -S fsim{slotid} -d -m bash -c "script -f -c 'stty intr ^] && sudo sudo LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH ./{driver} +permissive $(sed \':a;N;$!ba;s/\\n/ /g\' {runtimeconf}) +slotid={slotid} +profile-interval={profile_interval} {zero_out_dram} {command_nic_macs} {command_switch_macs} {command_nic_ips} {command_rootfses} {command_niclogs} {command_blkdev_logs}  {tracefile} +trace-select0={trace_select} +trace-start0={trace_start} +trace-end0={trace_end} +trace-output-format0={trace_output_format} {dwarf_file_name} +autocounter-readrate0={autocounter_readrate} {autocounterfile} {command_linklatencies} {command_netbws}  {command_shmemportnames} +permissive-off {command_bootbinaries} && stty intr ^c' uartlog"; sleep 1""".format(
+        basecommand = """screen -S fsim{slotid} -d -m bash -c "script -f -c 'stty intr ^] && sudo sudo LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH ./{driver} +permissive $(sed \':a;N;$!ba;s/\\n/ /g\' {runtimeconf}) +slotid={slotid} +profile-interval={profile_interval} {zero_out_dram} {command_nic_macs} {command_switch_macs} {command_nic_ips} {command_timeout_cycles} {command_rtt_pkts} {command_rootfses} {command_niclogs} {command_blkdev_logs}  {tracefile} +trace-select0={trace_select} +trace-start0={trace_start} +trace-end0={trace_end} +trace-output-format0={trace_output_format} {dwarf_file_name} +autocounter-readrate0={autocounter_readrate} {autocounterfile} {command_linklatencies} {command_netbws}  {command_shmemportnames} +permissive-off {command_bootbinaries} && stty intr ^c' uartlog"; sleep 1""".format(
             slotid=slotid, driver=driver, runtimeconf=runtimeconf,
             command_nic_macs=command_nic_macs,
             command_switch_macs=command_switch_macs,
             command_nic_ips=command_nic_ips,
+            command_timeout_cycles=command_timeout_cycles,
+            command_rtt_pkts=command_rtt_pkts,
             command_rootfses=command_rootfses,
             command_niclogs=command_niclogs,
             command_blkdev_logs=command_blkdev_logs,
@@ -275,6 +280,8 @@ class InnerRuntimeConfiguration:
         self.profileinterval = int(runtime_dict['targetconfig']['profileinterval'])
         self.high_priority_obuf_size = int(runtime_dict['targetconfig']['high_priority_obuf_size'])
         self.low_priority_obuf_size = int(runtime_dict['targetconfig']['low_priority_obuf_size'])
+        self.default_timeout_cycles = int(runtime_dict['targetconfig']['timeout_cycles'])
+        self.default_rtt_pkts = int(runtime_dict['targetconfig']['rtt_pkts'])
         # Default values
         self.trace_enable = False
         self.trace_select = "0"
@@ -353,7 +360,9 @@ class RuntimeConfig:
             self.innerconf.zerooutdram,
             self.innerconf.high_priority_obuf_size,
             self.innerconf.low_priority_obuf_size,
-            self.innerconf.wait_for_all_sims)
+            self.innerconf.wait_for_all_sims,
+            self.innerconf.default_timeout_cycles,
+            self.innerconf.default_rtt_pkts)
 
     def launch_run_farm(self):
         """ directly called by top-level launchrunfarm command. """

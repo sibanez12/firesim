@@ -38,7 +38,7 @@ class FireSimTopologyWithPasses:
                  defaulttraceoutputformat,
                  defaultautocounterreadrate, terminateoncompletion,
                  defaultzerooutdram, high_priority_obuf_size, low_priority_obuf_size,
-                 wait_for_all_sims):
+                 wait_for_all_sims, default_timeout_cycles, default_rtt_pkts):
         self.passes_used = []
         self.user_topology_name = user_topology_name
         self.no_net_num_nodes = no_net_num_nodes
@@ -60,6 +60,8 @@ class FireSimTopologyWithPasses:
         self.defaultzerooutdram = defaultzerooutdram
         self.terminateoncompletion = terminateoncompletion
         self.wait_for_all_sims = wait_for_all_sims
+        self.default_timeout_cycles = default_timeout_cycles
+        self.default_rtt_pkts = default_rtt_pkts
 
         self.high_priority_obuf_size = high_priority_obuf_size
         self.low_priority_obuf_size = low_priority_obuf_size
@@ -339,6 +341,10 @@ class FireSimTopologyWithPasses:
                     node.autocounter_readrate = self.defaultautocounterreadrate
                 if node.zerooutdram is None:
                     node.zerooutdram = self.defaultzerooutdram
+                if node.timeout_cycles is None:
+                    node.timeout_cycles = self.default_timeout_cycles
+                if node.rtt_pkts is None:
+                    node.rtt_pkts = self.default_rtt_pkts
 
 
     def pass_allocate_nbd_devices(self):
