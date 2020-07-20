@@ -1,0 +1,8 @@
+{
+	"benchmark_name": "lnic-incast-multi-service",
+	"common_simulation_outputs": [
+		"uartlog"
+	],
+	"common_bootbinary": "../../../../../software/firemarshal/lnic-workloads/lnic-incast-multi-service/lnic-incast-multi-service.riscv",
+	"common_rootfs": "../../../../../software/firemarshal/wlutil/dummy.rootfs"
+}
