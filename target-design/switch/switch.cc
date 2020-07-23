@@ -316,7 +316,7 @@ void send_with_priority(uint16_t port, switchpacket* tsp) {
     flags_str += is_nack ? " NACK" : "";
     flags_str += is_pull ? " PULL" : "";
     flags_str += is_chop ? " CHOP" : "";
-    fprintf(stdout, "IP(src=%s, dst=%s), LNIC(flags=%s, msg_len=%d, src_context=%d, dst_context=%d), packet_len=\n", ip_src_addr.c_str(), ip_dst_addr.c_str(), flags_str.c_str(), lnic_msg_len_bytes, lnic_src_context, lnic_dst_context, packet_size_bytes);
+    fprintf(stdout, "IP(src=%s, dst=%s), LNIC(flags=%s, msg_len=%d, src_context=%d, dst_context=%d), packet_len=%d\n", ip_src_addr.c_str(), ip_dst_addr.c_str(), flags_str.c_str(), lnic_msg_len_bytes, lnic_src_context, lnic_dst_context, packet_size_bytes);
 #endif LOG_ALL_PACKETS
 
     if (is_data && !is_chop) {
