@@ -197,10 +197,10 @@ class FireSimServerNode(FireSimNode):
         return self.ip_address
     
     def get_timeout_cycles(self):
-        self.timeout_cycles
+        return str(self.timeout_cycles)
     
     def get_rtt_pkts(self):
-        self.rtt_pkts
+        return str(self.rtt_pkts)
 
     def process_qcow2_rootfses(self, rootfses_list):
         """ Take in list of all rootfses on this node. For the qcow2 ones, find
