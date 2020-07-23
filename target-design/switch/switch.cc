@@ -105,6 +105,7 @@ uint64_t this_iter_cycles_start = 0;
 #define QUEUE_SIZE_LOG_INTERVAL 100 // 100 cycles between log interval points
 #define LOG_QUEUE_SIZE
 #define LOG_EVENTS
+#define LOG_ALL_PACKETS
 
 // These are both set by command-line arguments. Don't change them here.
 int HIGH_PRIORITY_OBUF_SIZE = 0;
@@ -293,10 +294,30 @@ void send_with_priority(uint16_t port, switchpacket* tsp) {
 
     uint64_t lnic_src_context_offset = (uint64_t)tsp->dat + ETHER_HEADER_SIZE + IP_HEADER_SIZE + 1;
     uint64_t lnic_dst_context_offset = (uint64_t)tsp->dat + ETHER_HEADER_SIZE + IP_HEADER_SIZE + 3;
+    uint16_t lnic_src_context = __builtin_bswap16(*(uint16_t*)lnic_src_context_offset);
+    uint16_t lnic_dst_context = __builtin_bswap16(*(uint16_t*)lnic_dst_context_offset);
 
     uint64_t packet_data_size = packet_size_bytes - ETHER_HEADER_SIZE - IP_HEADER_SIZE - LNIC_HEADER_SIZE;
     uint64_t packet_msg_words_offset = (uint64_t)tsp->dat + ETHER_HEADER_SIZE + IP_HEADER_SIZE + LNIC_HEADER_SIZE;
     uint64_t* packet_msg_words = (uint64_t*)packet_msg_words_offset;
+
+#ifdef LOG_ALL_PACKETS
+    struct timeval format_time;
+    format_time.tv_sec = tsp->timestamp / 1000000000;
+    format_time.tv_usec = (tsp->timestamp % 1000000000) / 1000;
+    pcpp::RawPacket raw_packet((const uint8_t*)tsp->dat, 200*sizeof(uint64_t), format_time, false, pcpp::LINKTYPE_ETHERNET);
+    pcpp::Packet parsed_packet(&raw_packet);
+    pcpp::IPv4Layer* ip_layer = parsed_packet.getLayerOfType<pcpp::IPv4Layer>();
+    std::string ip_src_addr = ip_layer->getSrcIpAddress().toString();
+    std::string ip_dst_addr = ip_layer->getDstIpAddress().toString();
+    std::string flags_str;
+    flags_str += is_data ? "DATA" : "";
+    flags_str += is_ack ? " ACK" : "";
+    flags_str += is_nack ? " NACK" : "";
+    flags_str += is_pull ? " PULL" : "";
+    flags_str += is_chop ? " CHOP" : "";
+    fprintf(stdout, "IP(src=%s, dst=%s), LNIC(flags=%s, msg_len=%d, src_context=%d, dst_context=%d), packet_len=\n", ip_src_addr.c_str(), ip_dst_addr.c_str(), flags_str.c_str(), lnic_msg_len_bytes, lnic_src_context, lnic_dst_context, packet_size_bytes);
+#endif LOG_ALL_PACKETS
 
     if (is_data && !is_chop) {
         // Regular data, send to low priority queue or chop and send to high priority
