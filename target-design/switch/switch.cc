@@ -134,6 +134,7 @@ for (int port = 0; port < NUMPORTS; port++) {
     for (int tokenno = 0; tokenno < NUM_TOKENS; tokenno++) {
         if (is_valid_flit(input_port_buf, tokenno)) {
             uint64_t flit = get_flit(input_port_buf, tokenno);
+            fprintf(stdout, "read flit %#lx\n", flit);
 
             switchpacket * sp;
             if (!(current_port->input_in_progress)) {
@@ -316,7 +317,8 @@ void send_with_priority(uint16_t port, switchpacket* tsp) {
     flags_str += is_nack ? " NACK" : "";
     flags_str += is_pull ? " PULL" : "";
     flags_str += is_chop ? " CHOP" : "";
-    fprintf(stdout, "IP(src=%s, dst=%s), LNIC(flags=%s, msg_len=%d, src_context=%d, dst_context=%d), packet_len=%d\n", ip_src_addr.c_str(), ip_dst_addr.c_str(), flags_str.c_str(), lnic_msg_len_bytes, lnic_src_context, lnic_dst_context, packet_size_bytes);
+    fprintf(stdout, "IP(src=%s, dst=%s), LNIC(flags=%s, msg_len=%d, src_context=%d, dst_context=%d), packet_len=%d, port=%d\n", ip_src_addr.c_str(), ip_dst_addr.c_str(),
+                     flags_str.c_str(), lnic_msg_len_bytes, lnic_src_context, lnic_dst_context, packet_size_bytes, port);
 #endif LOG_ALL_PACKETS
 
     if (is_data && !is_chop) {

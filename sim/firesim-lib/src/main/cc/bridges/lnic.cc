@@ -255,9 +255,9 @@ void lnic_t::init() {
     write(mmio_addrs->switch_mac_addr_upper, (switch_mac_bigendian >> 32) & 0xFFFFFFFF);
     write(mmio_addrs->switch_mac_addr_lower, switch_mac_bigendian & 0xFFFFFFFF);
     write(mmio_addrs->nic_ip_addr, nic_ip_bigendian);
-    write(mmio_addrs->timeout_cycles_upper, (timeout_cycles_bigendian >> 32) & 0xFFFFFFFF);
-    write(mmio_addrs->timeout_cycles_lower, timeout_cycles_bigendian & 0xFFFFFFFF);
-    write(mmio_addrs->rtt_pkts, rtt_pkts_bigendian);
+    write(mmio_addrs->timeout_cycles_lower, (timeout_cycles_lendian >> 32) & 0xFFFFFFFF);
+    write(mmio_addrs->timeout_cycles_upper, timeout_cycles_lendian & 0xFFFFFFFF);
+    write(mmio_addrs->rtt_pkts, rtt_pkts_lendian);
 
     uint32_t output_tokens_available = read(mmio_addrs->outgoing_count);
     uint32_t input_token_capacity = SIMLATENCY_BT - read(mmio_addrs->incoming_count);
@@ -279,12 +279,12 @@ void lnic_t::init() {
     return;
 }
 
-//#define TOKENVERIFY
+#define TOKENVERIFY
 
 void lnic_t::tick() {
     struct timespec tstart, tend;
 
-    //#define DEBUG_NIC_PRINT
+    #define DEBUG_NIC_PRINT
 
     while (true) { // break when we don't have 5k tokens
         uint32_t tokens_this_round = 0;
