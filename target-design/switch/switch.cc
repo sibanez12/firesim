@@ -134,7 +134,6 @@ for (int port = 0; port < NUMPORTS; port++) {
     for (int tokenno = 0; tokenno < NUM_TOKENS; tokenno++) {
         if (is_valid_flit(input_port_buf, tokenno)) {
             uint64_t flit = get_flit(input_port_buf, tokenno);
-            fprintf(stdout, "read flit %#lx\n", flit);
 
             switchpacket * sp;
             if (!(current_port->input_in_progress)) {

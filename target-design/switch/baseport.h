@@ -161,7 +161,6 @@ void BasePort::write_flits_to_output() {
                 write_last_flit(current_output_buf, flitswritten, i == (thispacket->amtwritten-1));
                 write_valid_flit(current_output_buf, flitswritten);
                 write_flit(current_output_buf, flitswritten, thispacket->dat[i]);
-                fprintf(stdout, "wrote flit %#lx\n", thispacket->dat[i]);
                 empty_buf = false;
 
                 if (!_throttle)
