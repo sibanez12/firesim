@@ -41,6 +41,8 @@ class BasePort {
         std::queue<switchpacket*> inputqueue;
         std::queue<switchpacket*> outputqueue;
 
+        size_t outputqueue_size;
+
         int push_input(switchpacket *sp);
 
     protected:
@@ -49,7 +51,7 @@ class BasePort {
 };
 
 BasePort::BasePort(int portNo, bool throttle)
-    : _portNo(portNo), _throttle(throttle)
+    : _portNo(portNo), _throttle(throttle), outputqueue_size(0)
 {
 }
 
@@ -104,18 +106,6 @@ void BasePort::write_flits_to_output() {
         // confirm that a) we are allowed to send this out based on timestamp
         // b) we are allowed to send this out based on available space (TODO fix)
         if (outputtimestamp < maxtime) {
-#ifdef LIMITED_BUFSIZE
-            // output-buffer size-based throttling, based on input time of first flit
-            int64_t diff = basetime + flitswritten - outputtimestamp;
-            if ((thispacket->amt_read == 0) && (diff > OUTPUT_BUF_SIZE)) {
-                // this packet would've been dropped due to buffer overflow.
-                // so, drop it.
-                printf("overflow, drop pack: intended timestamp: %ld, current timestamp: %ld, out bufsize in # flits: %ld, diff: %ld\n", outputtimestamp, basetime + flitswritten, OUTPUT_BUF_SIZE, (int64_t)(basetime + flitswritten) - (int64_t)(outputtimestamp));
-                outputqueue.pop();
-                free(thispacket);
-                continue;
-            }
-#endif
             // we can write this flit
             //
             // first, advance flitswritten to the correct start point:
@@ -146,6 +136,7 @@ void BasePort::write_flits_to_output() {
             if (i == thispacket->amtwritten) {
                 // we finished sending this packet, so get rid of it
                 outputqueue.pop();
+                outputqueue_size -= thispacket->amtwritten * sizeof(uint64_t);
                 free(thispacket);
             } else {
                 // we're not done sending this packet, so mark how much has been sent

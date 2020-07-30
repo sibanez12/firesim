@@ -42,13 +42,9 @@ int switchlat = 0;
 int throttle_numer = 1;
 int throttle_denom = 1;
 
-// uncomment to use a limited output buffer size, OUTPUT_BUF_SIZE
-//#define LIMITED_BUFSIZE
-
-// size of output buffers, in # of flits
-// only if LIMITED BUFSIZE is set
+// size of output buffers, in bytes
 // TODO: expose in manager
-#define OUTPUT_BUF_SIZE (131072L)
+int OUTPUT_BUF_SIZE = 4375; // bytes
 
 // pull in # clients config
 #define NUMCLIENTSCONFIG
@@ -80,10 +76,18 @@ uint64_t this_iter_cycles_start = 0;
 #include "socketport.h"
 #include "sshport.h"
 
+#define LOG_QUEUE_SIZE
+#define LOG_EVENTS
+
 // TODO: replace these port mapping hacks with a mac -> port mapping,
 // could be hardcoded
 
 BasePort * ports[NUMPORTS];
+
+void forward(uint16_t port, switchpacket* tsp);
+
+// State to keep track of the last queue size samples.
+int last_qsize_samples[NUMPORTS];
 
 /* switch from input ports to output ports */
 void do_fast_switching() {
@@ -183,10 +187,19 @@ while (!pqueue.empty()) {
         }
         free(tsp);
     } else {
-        ports[send_to_port]->outputqueue.push(tsp);
+        forward(send_to_port, tsp);
     }
 }
 
+// Log queue sizes if logging is enabled
+#ifdef LOG_QUEUE_SIZE
+for (int i = 0; i < NUMPORTS; i++) {
+    if (ports[i]->outputqueue_size != last_qsize_samples[i]) {
+        last_qsize_samples[i] = ports[i]->outputqueue_size;
+        fprintf(stdout, "&&CSV&&QueueSize,%ld,%d,%d\n", this_iter_cycles_start, i, ports[i]->outputqueue_size);
+    }
+}
+#endif
 
 // finally in parallel, flush whatever we can to the output queues based on timestamp
 
@@ -196,6 +209,19 @@ for (int port = 0; port < NUMPORTS; port++) {
     thisport->write_flits_to_output();
 }
 
+}
+
+void forward(uint16_t port, switchpacket* tsp) {
+    uint64_t packet_size_bytes = tsp->amtwritten * sizeof(uint64_t);
+    if (packet_size_bytes + ports[port]->outputqueue_size < OUTPUT_BUF_SIZE) {
+        ports[port]->outputqueue.push(tsp);
+        ports[port]->outputqueue_size += packet_size_bytes;
+    } else {
+        free(tsp);
+#ifdef LOG_EVENTS
+        fprintf(stdout, "&&CSV&&Events,Dropped,%ld,%d\n", this_iter_cycles_start, port);
+#endif
+    }
 }
 
 static void simplify_frac(int n, int d, int *nn, int *dd)
@@ -242,6 +268,14 @@ int main (int argc, char *argv[]) {
     }
 
     omp_set_num_threads(NUMPORTS); // we parallelize over ports, so max threads = # ports
+
+#ifdef LOG_QUEUE_SIZE
+    // initialize last_qsize_samples
+    for (int p = 0; p < NUMPORTS; p++) {
+        last_qsize_samples[p] = 0;
+        fprintf(stdout, "&&CSV&&QueueSize,%ld,%d,%d\n", this_iter_cycles_start, p, 0);
+    }
+#endif
 
 #define PORTSETUPCONFIG
 #include "switchconfig.h"
