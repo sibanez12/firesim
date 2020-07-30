@@ -136,7 +136,8 @@ void BasePort::write_flits_to_output() {
             if (i == thispacket->amtwritten) {
                 // we finished sending this packet, so get rid of it
                 outputqueue.pop();
-                outputqueue_size -= thispacket->amtwritten * sizeof(uint64_t);
+                uint64_t packet_size_bytes = thispacket->amtwritten * sizeof(uint64_t);
+                outputqueue_size -= packet_size_bytes;
                 free(thispacket);
             } else {
                 // we're not done sending this packet, so mark how much has been sent

@@ -182,7 +182,7 @@ while (!pqueue.empty()) {
             if (i != tsp->sender ) {
                 switchpacket * tsp2 = (switchpacket*)malloc(sizeof(switchpacket));
                 memcpy(tsp2, tsp, sizeof(switchpacket));
-                ports[i]->outputqueue.push(tsp2);
+                forward(i, tsp2);
             }
         }
         free(tsp);
@@ -214,9 +214,11 @@ for (int port = 0; port < NUMPORTS; port++) {
 void forward(uint16_t port, switchpacket* tsp) {
     uint64_t packet_size_bytes = tsp->amtwritten * sizeof(uint64_t);
     if (packet_size_bytes + ports[port]->outputqueue_size < OUTPUT_BUF_SIZE) {
+        // there is sufficient room in the buffer for this pkt
         ports[port]->outputqueue.push(tsp);
         ports[port]->outputqueue_size += packet_size_bytes;
     } else {
+        // drop the pkt
         free(tsp);
 #ifdef LOG_EVENTS
         fprintf(stdout, "&&CSV&&Events,Dropped,%ld,%d\n", this_iter_cycles_start, port);
