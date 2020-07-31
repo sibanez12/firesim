@@ -102,7 +102,9 @@ uint64_t this_iter_cycles_start = 0;
 #define LNIC_PACKET_CHOPPED_SIZE   128 // Bytes, the minimum L-NIC packet size
 #define LNIC_HEADER_SIZE           30
 
-#define QUEUE_SIZE_LOG_INTERVAL 100 // 100 cycles between log interval points
+// Comment this out to disable pkt trimming
+#define TRIM_PKTS
+
 #define LOG_QUEUE_SIZE
 #define LOG_EVENTS
 #define LOG_ALL_PACKETS
@@ -116,6 +118,10 @@ int LOW_PRIORITY_OBUF_SIZE = 0;
 
 BasePort * ports[NUMPORTS];
 void send_with_priority(uint16_t port, switchpacket* tsp);
+
+// State to keep track of the last queue size samples.
+// Index 0 is high-priority, index 1 is low-priority.
+int last_qsize_samples[NUMPORTS][2];
 
 /* switch from input ports to output ports */
 void do_fast_switching() {
@@ -251,20 +257,11 @@ while (!pqueue.empty()) {
 
 // Log queue sizes if logging is enabled
 #ifdef LOG_QUEUE_SIZE
-if (this_iter_cycles_start % QUEUE_SIZE_LOG_INTERVAL == 0) {
-    bool non_zero_buffer = false;
-    for (int i = 0; i < NUMPORTS; i++) {
-        if (ports[i]->outputqueue_high_size != 0 || ports[i]->outputqueue_low_size != 0) {
-            non_zero_buffer = true;
-            break;
-        }
-    }
-    if (non_zero_buffer) {
-        fprintf(stdout, "&&CSV&&QueueSize,%ld", this_iter_cycles_start);
-        for (int i = 0; i < NUMPORTS; i++) {
-            fprintf(stdout, ",%d,%ld,%ld", i, ports[i]->outputqueue_high_size, ports[i]->outputqueue_low_size);
-        }
-        fprintf(stdout, "\n");
+for (int i = 0; i < NUMPORTS; i++) {
+    if (ports[i]->outputqueue_high_size != last_qsize_samples[i][0] || ports[i]->outputqueue_low_size != last_qsize_samples[i][1]) {
+        last_qsize_samples[i][0] = ports[i]->outputqueue_high_size;
+        last_qsize_samples[i][1] = ports[i]->outputqueue_low_size;
+        fprintf(stdout, "&&CSV&&QueueSize,%ld,%d,%d,%d\n", this_iter_cycles_start, i, ports[i]->outputqueue_high_size, ports[i]->outputqueue_low_size);
     }
 }
 #endif
@@ -316,8 +313,9 @@ void send_with_priority(uint16_t port, switchpacket* tsp) {
     flags_str += is_nack ? " NACK" : "";
     flags_str += is_pull ? " PULL" : "";
     flags_str += is_chop ? " CHOP" : "";
-    fprintf(stdout, "IP(src=%s, dst=%s), LNIC(flags=%s, msg_len=%d, src_context=%d, dst_context=%d), packet_len=%d, port=%d\n", ip_src_addr.c_str(), ip_dst_addr.c_str(),
-                     flags_str.c_str(), lnic_msg_len_bytes, lnic_src_context, lnic_dst_context, packet_size_bytes, port);
+    fprintf(stdout, "%ld: IP(src=%s, dst=%s), LNIC(flags=%s, msg_len=%d, src_context=%d, dst_context=%d), packet_len=%d, port=%d\n",
+                     tsp->timestamp, ip_src_addr.c_str(), ip_dst_addr.c_str(), flags_str.c_str(), lnic_msg_len_bytes,
+                     lnic_src_context, lnic_dst_context, packet_size_bytes, port);
 #endif LOG_ALL_PACKETS
 
     if (is_data && !is_chop) {
@@ -327,11 +325,12 @@ void send_with_priority(uint16_t port, switchpacket* tsp) {
             ports[port]->outputqueue_low.push(tsp);
             ports[port]->outputqueue_low_size += packet_size_bytes;
         } else {
+#ifdef TRIM_PKTS
             // Try to chop the packet
             if (LNIC_PACKET_CHOPPED_SIZE + ports[port]->outputqueue_high_size < HIGH_PRIORITY_OBUF_SIZE) {
 #ifdef LOG_EVENTS
                 fprintf(stdout, "&&CSV&&Events,Chopped,%ld,%d\n", this_iter_cycles_start, port);
-#endif
+#endif // LOG_EVENTS
                 switchpacket * tsp2 = (switchpacket*)calloc(sizeof(switchpacket), 1);
                 tsp2->timestamp = tsp->timestamp;
                 tsp2->amtwritten = LNIC_PACKET_CHOPPED_SIZE / sizeof(uint64_t);
@@ -347,10 +346,16 @@ void send_with_priority(uint16_t port, switchpacket* tsp) {
             } else {
                 // TODO: We should really drop the lowest priority packet sometimes, not always the newly arrived packet
 #ifdef LOG_EVENTS
-                fprintf(stdout, "&&CSV&&Events,DroppedBothFull,%ld,%d\n", this_iter_cycles_start, port);
-#endif
+                fprintf(stdout, "&&CSV&&Events,DroppedData,%ld,%d\n", this_iter_cycles_start, port);
+#endif // LOG_EVENTS
                 free(tsp);
             }
+#else // TRIM_PKTS is not defined
+#ifdef LOG_EVENTS
+            fprintf(stdout, "&&CSV&&Events,DroppedData,%ld,%d\n", this_iter_cycles_start, port);
+#endif // LOG_EVENTS
+            free(tsp);
+#endif // TRIM_PKTS
         }
     } else if ((is_data && is_chop) || (!is_data && !is_chop)) {
         // Chopped data or control, send to high priority output queue
@@ -359,7 +364,7 @@ void send_with_priority(uint16_t port, switchpacket* tsp) {
             ports[port]->outputqueue_high_size += packet_size_bytes;
         } else {
 #ifdef LOG_EVENTS
-            fprintf(stdout, "&&CSV&&Events,DroppedControlFull,%ld,%d\n", this_iter_cycles_start, port);
+            fprintf(stdout, "&&CSV&&Events,DroppedControl,%ld,%d\n", this_iter_cycles_start, port);
 #endif
             free(tsp);
         }
@@ -419,6 +424,15 @@ int main (int argc, char *argv[]) {
     }
 
     omp_set_num_threads(NUMPORTS); // we parallelize over ports, so max threads = # ports
+
+#ifdef LOG_QUEUE_SIZE
+    // initialize last_qsize_samples
+    for (int p = 0; p < NUMPORTS; p++) {
+        last_qsize_samples[p][0] = 0; // high-priority
+        last_qsize_samples[p][1] = 0; // low-priority
+        fprintf(stdout, "&&CSV&&QueueSize,%ld,%d,%d,%d\n", this_iter_cycles_start, p, 0, 0);
+    }
+#endif
 
 #define PORTSETUPCONFIG
 #include "switchconfig.h"

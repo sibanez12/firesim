@@ -255,8 +255,8 @@ void lnic_t::init() {
     write(mmio_addrs->switch_mac_addr_upper, (switch_mac_bigendian >> 32) & 0xFFFFFFFF);
     write(mmio_addrs->switch_mac_addr_lower, switch_mac_bigendian & 0xFFFFFFFF);
     write(mmio_addrs->nic_ip_addr, nic_ip_bigendian);
-    write(mmio_addrs->timeout_cycles_lower, (timeout_cycles_lendian >> 32) & 0xFFFFFFFF);
-    write(mmio_addrs->timeout_cycles_upper, timeout_cycles_lendian & 0xFFFFFFFF);
+    write(mmio_addrs->timeout_cycles_upper, (timeout_cycles_lendian >> 32) & 0xFFFFFFFF);
+    write(mmio_addrs->timeout_cycles_lower, timeout_cycles_lendian & 0xFFFFFFFF);
     write(mmio_addrs->rtt_pkts, rtt_pkts_lendian);
 
     uint32_t output_tokens_available = read(mmio_addrs->outgoing_count);
