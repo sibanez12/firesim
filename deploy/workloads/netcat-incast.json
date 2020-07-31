@@ -1,0 +1,57 @@
+{
+	"benchmark_name": "netcat-incast",
+	"common_simulation_outputs": [
+		"uartlog"
+	],
+	"workloads": [
+		{
+			"name": "netcat-incast-server",
+			"bootbinary": "../../../../../software/firemarshal/images/netcat-incast-server-bin",
+			"rootfs": "../../../../../software/firemarshal/images/netcat-incast-server.img",
+			"outputs": [
+				"/root/client-1.txt",
+				"/root/client-2.txt",
+				"/root/client-3.txt",
+				"/root/client-4.txt",
+				"/root/client-5.txt",
+				"/root/client-6.txt",
+				"/root/client-7.txt"
+			]
+		},
+		{
+			"name": "netcat-incast-client-1",
+			"bootbinary": "../../../../../software/firemarshal/images/netcat-incast-client-1-bin",
+			"rootfs": "../../../../../software/firemarshal/images/netcat-incast-client-1.img"
+		},
+		{
+			"name": "netcat-incast-client-2",
+			"bootbinary": "../../../../../software/firemarshal/images/netcat-incast-client-2-bin",
+			"rootfs": "../../../../../software/firemarshal/images/netcat-incast-client-2.img"
+		},
+		{
+			"name": "netcat-incast-client-3",
+			"bootbinary": "../../../../../software/firemarshal/images/netcat-incast-client-3-bin",
+			"rootfs": "../../../../../software/firemarshal/images/netcat-incast-client-3.img"
+		},
+		{
+			"name": "netcat-incast-client-4",
+			"bootbinary": "../../../../../software/firemarshal/images/netcat-incast-client-4-bin",
+			"rootfs": "../../../../../software/firemarshal/images/netcat-incast-client-4.img"
+		},
+		{
+			"name": "netcat-incast-client-5",
+			"bootbinary": "../../../../../software/firemarshal/images/netcat-incast-client-5-bin",
+			"rootfs": "../../../../../software/firemarshal/images/netcat-incast-client-5.img"
+		},
+		{
+			"name": "netcat-incast-client-6",
+			"bootbinary": "../../../../../software/firemarshal/images/netcat-incast-client-6-bin",
+			"rootfs": "../../../../../software/firemarshal/images/netcat-incast-client-6.img"
+		},
+		{
+			"name": "netcat-incast-client-7",
+			"bootbinary": "../../../../../software/firemarshal/images/netcat-incast-client-7-bin",
+			"rootfs": "../../../../../software/firemarshal/images/netcat-incast-client-7.img"
+		}
+	]
+}
