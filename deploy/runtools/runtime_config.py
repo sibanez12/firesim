@@ -303,7 +303,7 @@ class InnerRuntimeConfiguration:
         self.default_rtt_pkts = int(runtime_dict['targetconfig']['rtt_pkts'])
 
         if 'load_gen' in runtime_dict:
-            self.load_gen_stats = LoadGenStats()
+            self.load_gen_stats = self.LoadGenStats()
             self.load_gen_stats.use_load_gen = runtime_dict['load_gen']['use_load_gen'] == "yes"
             self.load_gen_stats.test_type = runtime_dict['load_gen']['test_type']
             self.load_gen_stats.dist_type = runtime_dict['load_gen']['dist_type']
@@ -322,7 +322,7 @@ class InnerRuntimeConfiguration:
             self.load_gen_stats.c1_stall_freq = runtime_dict['load_gen']['c1_stall_freq']
             self.load_gen_stats.rtt_pkts = str(self.default_rtt_pkts)
         else:
-            self.load_gen_stats = LoadGenStats()
+            self.load_gen_stats = self.LoadGenStats()
             self.load_gen_stats.use_load_gen = False
         # Default values
         self.trace_enable = False

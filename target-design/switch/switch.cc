@@ -664,8 +664,6 @@ int main (int argc, char *argv[]) {
     HIGH_PRIORITY_OBUF_SIZE = atoi(argv[4]);
     LOW_PRIORITY_OBUF_SIZE = atoi(argv[5]);
 
-    POISSON_LAMBDA = 1.0 / (double)atoi(argv[8]);
-
 #ifdef USE_LOAD_GEN
     double request_rate_lambda = 1.0 / (double)request_rate_lambda_inverse;
     gen_rand = new std::default_random_engine;

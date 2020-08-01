@@ -69,7 +69,7 @@ class AbstractSwitchToSwitchConfig:
     def get_load_gen_stats(self):
         load_gen_stats = self.fsimswitchnode.load_gen_stats
         if not load_gen_stats.use_load_gen:
-            return
+            return ""
         
         restr = """
     #ifdef LOADGENSTATS
