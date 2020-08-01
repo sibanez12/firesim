@@ -84,31 +84,6 @@ uint64_t this_iter_cycles_start = 0;
 #include "switchconfig.h"
 #undef MACPORTSCONFIG
 
-// Pull in load generator parameters, if any
-#define LOADGENSTATS
-#include "switchconfig.h"
-#undef LOADGENSTATS
-#ifdef USE_LOAD_GEN
-#include "LnicLayer.h"
-#include "AppLayer.h"
-#define LOAD_GEN_MAC "08:55:66:77:88:08"
-#define LOAD_GEN_IP "10.0.0.1"
-#define NIC_MAC "00:26:E1:00:00:00"
-#define NIC_IP "10.0.0.2"
-#define MAX_TX_MSG_ID 127
-uint64_t next_threshold = 0;
-uint16_t global_tx_msg_id = 0;
-bool start_message_received = false;
-uint64_t global_start_message_count = 0;
-std::exponential_distribution<double>* gen_dist;
-std::default_random_engine* gen_rand;
-std::exponential_distribution<double>* service_exp_dist;
-std::default_random_engine* dist_rand;
-std::normal_distribution<double>* service_normal_high;
-std::normal_distribution<double>* service_normal_low;
-std::binomial_distribution<int>* service_select_dist;
-#endif
-
 #include "flit.h"
 #include "baseport.h"
 #include "shmemport.h"
@@ -133,6 +108,93 @@ std::binomial_distribution<int>* service_select_dist;
 #define LOG_QUEUE_SIZE
 #define LOG_EVENTS
 #define LOG_ALL_PACKETS
+
+// Pull in load generator parameters, if any
+#define LOADGENSTATS
+#include "switchconfig.h"
+#undef LOADGENSTATS
+#ifdef USE_LOAD_GEN
+#include "LnicLayer.h"
+#include "AppLayer.h"
+class parsed_packet_t {
+ private:
+    pcpp::Packet* pcpp_packet;
+ public:
+    pcpp::EthLayer* eth;
+    pcpp::IPv4Layer* ip;
+    pcpp::LnicLayer* lnic;
+    pcpp::AppLayer* app;
+    switchpacket* tsp;
+
+    parsed_packet_t() {
+        eth = nullptr;
+        ip = nullptr;
+        lnic = nullptr;
+        app = nullptr;
+        tsp = nullptr;
+        pcpp_packet = nullptr;
+    }
+
+    ~parsed_packet_t() {
+        if (pcpp_packet != nullptr) {
+            delete pcpp_packet;
+        }
+    }
+
+    bool parse(switchpacket* tsp) {
+        uint64_t packet_size_bytes = tsp->amtwritten * sizeof(uint64_t);
+        struct timeval format_time;
+        format_time.tv_sec = tsp->timestamp / 1000000000;
+        format_time.tv_usec = (tsp->timestamp % 1000000000) / 1000;
+        pcpp::RawPacket raw_packet((const uint8_t*)tsp->dat, 200*sizeof(uint64_t), format_time, false, pcpp::LINKTYPE_ETHERNET);
+        pcpp::Packet* parsed_packet = new pcpp::Packet(&raw_packet);
+        pcpp::EthLayer* eth_layer = parsed_packet->getLayerOfType<pcpp::EthLayer>();
+        pcpp::IPv4Layer* ip_layer = parsed_packet->getLayerOfType<pcpp::IPv4Layer>();
+        pcpp::LnicLayer* lnic_layer = (pcpp::LnicLayer*)parsed_packet->getLayerOfType(pcpp::LNIC, 0);
+        pcpp::AppLayer* app_layer = (pcpp::AppLayer*)parsed_packet->getLayerOfType(pcpp::GenericPayload, 0);
+        if (!eth_layer || !ip_layer || !lnic_layer || !app_layer) {
+            if (!eth_layer) fprintf(stdout, "Null eth layer\n");
+            if (!ip_layer) fprintf(stdout, "Null ip layer\n");
+            if (!lnic_layer) fprintf(stdout, "Null lnic layer\n");
+            if (!app_layer) fprintf(stdout, "Null app layer\n");
+            this->eth = nullptr;
+            this->ip = nullptr;
+            this->lnic = nullptr;
+            this->app = nullptr;
+            this->tsp = nullptr;
+            delete parsed_packet;
+            this->pcpp_packet = nullptr;
+            return false;
+        }
+        this->eth = eth_layer;
+        this->ip = ip_layer;
+        this->lnic = lnic_layer;
+        this->app = app_layer;
+        this->tsp = tsp;
+        this->pcpp_packet = parsed_packet;
+        return true;
+    }
+};
+#define LOAD_GEN_MAC "08:55:66:77:88:08"
+#define LOAD_GEN_IP "10.0.0.1"
+#define NIC_MAC "00:26:E1:00:00:00"
+#define NIC_IP "10.0.0.2"
+#define MAX_TX_MSG_ID 127
+#define APP_HEADER_SIZE 16
+uint64_t next_threshold = 0;
+uint16_t global_tx_msg_id = 0;
+bool start_message_received = false;
+uint64_t global_start_message_count = 0;
+std::exponential_distribution<double>* gen_dist;
+std::default_random_engine* gen_rand;
+std::exponential_distribution<double>* service_exp_dist;
+std::default_random_engine* dist_rand;
+std::normal_distribution<double>* service_normal_high;
+std::normal_distribution<double>* service_normal_low;
+std::binomial_distribution<int>* service_select_dist;
+void load_gen_hook(switchpacket* tsp);
+void generate_load_packets();
+#endif
 
 // These are both set by command-line arguments. Don't change them here.
 int HIGH_PRIORITY_OBUF_SIZE = 0;

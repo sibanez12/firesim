@@ -74,8 +74,8 @@ class AbstractSwitchToSwitchConfig:
         restr = """
     #ifdef LOADGENSTATS
     #define USE_LOAD_GEN
-    char* test_type = {};
-    char* dist_type = {};
+    char* test_type = "{}";
+    char* dist_type = "{}";
     uint64_t request_rate_lambda_inverse = {};
     uint64_t min_service_time = {};
     uint64_t max_service_time = {};
