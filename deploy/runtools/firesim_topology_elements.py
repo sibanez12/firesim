@@ -159,7 +159,7 @@ class FireSimServerNode(FireSimNode):
     def __init__(self, server_hardware_config=None, server_link_latency=None,
                  server_bw_max=None, server_profile_interval=None,
                  trace_enable=None, trace_select=None, trace_start=None, trace_end=None, trace_output_format=None, autocounter_readrate=None,
-                 zerooutdram=None, timeout_cycles=None, rtt_pkts=None):
+                 zerooutdram=None, timeout_cycles=None, rtt_pkts=None, load_gen_stats=None):
         super(FireSimServerNode, self).__init__()
         self.server_hardware_config = server_hardware_config
         self.server_link_latency = server_link_latency
@@ -174,6 +174,7 @@ class FireSimServerNode(FireSimNode):
         self.zerooutdram = zerooutdram
         self.timeout_cycles = timeout_cycles
         self.rtt_pkts = rtt_pkts
+        self.load_gen_stats = load_gen_stats
         self.job = None
         self.server_id_internal = FireSimServerNode.SERVERS_CREATED
         FireSimServerNode.SERVERS_CREATED += 1
@@ -387,8 +388,14 @@ class FireSimServerNode(FireSimNode):
         # cases
         return self.get_job_name() + "-" + self.get_job().bootbinary_path().split("/")[-1]
     
+    def get_load_gen_progargs(self):
+        return [self.load_gen_stats.test_type, str(self.load_gen_stats.c1_stall_factor), str(self.load_gen_stats.c1_stall_freq)]
+    
     def get_progargs(self):
-        return [self.get_mac_address(), self.get_ip_address()]
+        if self.load_gen_stats and self.load_gen_stats.use_load_gen:
+            return [self.get_mac_address(), self.get_ip_address()] + self.get_load_gen_progargs()
+        else:
+            return [self.get_mac_address(), self.get_ip_address()]
 
 
 class FireSimSuperNodeServerNode(FireSimServerNode):
@@ -587,7 +594,7 @@ class FireSimSwitchNode(FireSimNode):
     # used to give switches a global ID
     SWITCHES_CREATED = 0
 
-    def __init__(self, switching_latency=None, link_latency=None, bandwidth=None, high_priority_obuf_size=None, low_priority_obuf_size=None):
+    def __init__(self, switching_latency=None, link_latency=None, bandwidth=None, high_priority_obuf_size=None, low_priority_obuf_size=None, load_gen_stats=None):
         super(FireSimSwitchNode, self).__init__()
         self.switch_id_internal = FireSimSwitchNode.SWITCHES_CREATED
         FireSimSwitchNode.SWITCHES_CREATED += 1
@@ -597,6 +604,7 @@ class FireSimSwitchNode(FireSimNode):
         self.switch_bandwidth = bandwidth
         self.high_priority_obuf_size = high_priority_obuf_size
         self.low_priority_obuf_size = low_priority_obuf_size
+        self.load_gen_stats = load_gen_stats
 
         # switch_builder is a class designed to emit a particular switch model.
         # it should take self and then be able to emit a particular switch model's

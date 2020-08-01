@@ -38,7 +38,7 @@ class FireSimTopologyWithPasses:
                  defaulttraceoutputformat,
                  defaultautocounterreadrate, terminateoncompletion,
                  defaultzerooutdram, high_priority_obuf_size, low_priority_obuf_size,
-                 wait_for_all_sims, default_timeout_cycles, default_rtt_pkts):
+                 wait_for_all_sims, default_timeout_cycles, default_rtt_pkts, load_gen_stats):
         self.passes_used = []
         self.user_topology_name = user_topology_name
         self.no_net_num_nodes = no_net_num_nodes
@@ -62,6 +62,7 @@ class FireSimTopologyWithPasses:
         self.wait_for_all_sims = wait_for_all_sims
         self.default_timeout_cycles = default_timeout_cycles
         self.default_rtt_pkts = default_rtt_pkts
+        self.load_gen_stats = load_gen_stats
 
         self.high_priority_obuf_size = high_priority_obuf_size
         self.low_priority_obuf_size = low_priority_obuf_size
@@ -318,6 +319,8 @@ class FireSimTopologyWithPasses:
                     node.high_priority_obuf_size = self.high_priority_obuf_size
                 if node.low_priority_obuf_size is None:
                     node.low_priority_obuf_size = self.low_priority_obuf_size
+                if node.load_gen_stats is None:
+                    node.load_gen_stats = self.load_gen_stats
 
             if isinstance(node, FireSimServerNode):
                 if node.server_link_latency is None:
@@ -345,6 +348,8 @@ class FireSimTopologyWithPasses:
                     node.timeout_cycles = self.default_timeout_cycles
                 if node.rtt_pkts is None:
                     node.rtt_pkts = self.default_rtt_pkts
+                if node.load_gen_stats is None:
+                    node.load_gen_stats = self.load_gen_stats
 
 
     def pass_allocate_nbd_devices(self):

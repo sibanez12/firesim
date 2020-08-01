@@ -63,7 +63,38 @@ class AbstractSwitchToSwitchConfig:
         constructedstring += self.get_numclientsconfig()
         constructedstring += self.get_portsetup()
         constructedstring += self.get_mac2port()
+        constructedstring += self.get_load_gen_stats()
         return constructedstring
+    
+    def get_load_gen_stats(self):
+        load_gen_stats = self.fsimswitchnode.load_gen_stats
+        if not load_gen_stats.use_load_gen:
+            return
+        
+        restr = """
+    #ifdef LOADGENSTATS
+    #define USE_LOAD_GEN
+    char* test_type = {};
+    char* dist_type = {};
+    uint64_t request_rate_lambda_inverse = {};
+    uint64_t min_service_time = {};
+    uint64_t max_service_time = {};
+    double exp_dist_scale_factor = {};
+    double exp_dist_decay_const = {};
+    double bimodal_dist_high_mean = {};
+    double bimodal_dist_high_stdev = {};
+    double bimodal_dist_low_mean = {};
+    double bimodal_dist_low_stdev = {};
+    double bimodal_dist_fraction_high = {};
+    uint64_t fixed_dist_cycles = {};
+    uint16_t rtt_pkts = {};
+    #endif
+    """.format(load_gen_stats.test_type, load_gen_stats.dist_type, load_gen_stats.request_rate_lambda_inverse,
+               load_gen_stats.min_service_time, load_gen_stats.max_service_time, load_gen_stats.exp_dist_scale_factor,
+               load_gen_stats.exp_dist_decay_const, load_gen_stats.bimodal_dist_high_mean, load_gen_stats.bimodal_dist_high_stdev,
+               load_gen_stats.bimodal_dist_low_mean, load_gen_stats.bimodal_dist_low_stdev, load_gen_stats.bimodal_dist_fraction_high,
+               load_gen_stats.fixed_dist_cycles, load_gen_stats.rtt_pkts)
+        return restr
 
     # produce mac2port array portion of config
     def get_mac2port(self):

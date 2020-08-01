@@ -12,6 +12,8 @@
 #include <cstdlib>
 #include <arpa/inet.h>
 #include <string>
+#include <sstream>
+#include <random>
 
 #include <time.h>
 #include <netinet/ether.h>
@@ -81,6 +83,31 @@ uint64_t this_iter_cycles_start = 0;
 #define MACPORTSCONFIG
 #include "switchconfig.h"
 #undef MACPORTSCONFIG
+
+// Pull in load generator parameters, if any
+#define LOADGENSTATS
+#include "switchconfig.h"
+#undef LOADGENSTATS
+#ifdef USE_LOAD_GEN
+#include "LnicLayer.h"
+#include "AppLayer.h"
+#define LOAD_GEN_MAC "08:55:66:77:88:08"
+#define LOAD_GEN_IP "10.0.0.1"
+#define NIC_MAC "00:26:E1:00:00:00"
+#define NIC_IP "10.0.0.2"
+#define MAX_TX_MSG_ID 127
+uint64_t next_threshold = 0;
+uint16_t global_tx_msg_id = 0;
+bool start_message_received = false;
+uint64_t global_start_message_count = 0;
+std::exponential_distribution<double>* gen_dist;
+std::default_random_engine* gen_rand;
+std::exponential_distribution<double>* service_exp_dist;
+std::default_random_engine* dist_rand;
+std::normal_distribution<double>* service_normal_high;
+std::normal_distribution<double>* service_normal_low;
+std::binomial_distribution<int>* service_select_dist;
+#endif
 
 #include "flit.h"
 #include "baseport.h"
@@ -223,6 +250,13 @@ while (!pqueue.empty()) {
         continue;
     }
 
+// If this is a load generator, we need to do something completely different with all incoming packets.
+#ifdef USE_LOAD_GEN
+    load_gen_hook(tsp);
+    free(tsp);
+    continue;
+#endif
+
     int flit_offset_doublebytes = (ETHER_HEADER_SIZE + IP_DST_FIELD_OFFSET + IP_SUBNET_OFFSET) / sizeof(uint16_t);
     uint16_t switching_flit = ((uint16_t*)tsp->dat)[flit_offset_doublebytes];
 
@@ -248,6 +282,10 @@ while (!pqueue.empty()) {
         send_with_priority(send_to_port, tsp);
     }
 }
+
+#ifdef USE_LOAD_GEN
+generate_load_packets();
+#endif
 
 // Log queue sizes if logging is enabled
 #ifdef LOG_QUEUE_SIZE
@@ -278,6 +316,228 @@ for (int port = 0; port < NUMPORTS; port++) {
 }
 
 }
+
+// Load generator specific code begin
+#ifdef USE_LOAD_GEN
+void print_packet(char* direction, parsed_packet_t* packet) {
+    fprintf(stdout, "%s IP(src=%s, dst=%s), %s, %s, packet_len=%d\n", direction,
+            packet->ip->getSrcIpAddress().toString().c_str(), packet->ip->getDstIpAddress().toString().c_str(),
+            packet->lnic->toString().c_str(), packet->app->toString().c_str(), packet->tsp->amtwritten * sizeof(uint64_t));
+}
+
+bool count_start_message() {
+    global_start_message_count++;
+    if (strcmp(test_type, "ONE_CONTEXT_FOUR_CORES") == 0) {
+        return global_start_message_count >= 4;
+    } else if (strcmp(test_type, "FOUR_CONTEXTS_FOUR_CORES") == 0) {
+        return global_start_message_count >= 4;
+    } else if (strcmp(test_type, "TWO_CONTEXTS_FOUR_SHARED_CORES") == 0) {
+        return global_start_message_count >= 8;
+    } else if ((strcmp(test_type, "DIF_PRIORITY_LNIC_DRIVEN") == 0) ||
+              (strcmp(test_type, "DIF_PRIORITY_TIMER_DRIVEN") == 0) ||
+              (strcmp(test_type, "HIGH_PRIORITY_C1_STALL") == 0) ||
+              (strcmp(test_type, "LOW_PRIORITY_C1_STALL") == 0)) {
+        return global_start_message_count >= 2;
+    } else {
+        fprintf(stdout, "Unknown test type: %s\n", test_type);
+        exit(-1);
+    }
+}
+
+void log_packet_response_time(parsed_packet_t* packet) {
+    // TODO: We need to print a header as well to record what the parameters for this run were.
+    uint64_t service_time = be64toh(packet->app->getAppHeader()->service_time);
+    uint64_t sent_time = be64toh(packet->app->getAppHeader()->sent_time);
+    uint16_t src_context = be16toh(packet->lnic->getLnicHeader()->src_context);
+    uint64_t recv_time = packet->tsp->timestamp; // TODO: This accounts for tokens, even though sends don't. Is that a problem?
+    uint64_t iter_time = this_iter_cycles_start;
+    uint64_t delta_time = (recv_time > sent_time) ? (recv_time - sent_time) : 0;
+    fprintf(stdout, "&&CSV&&ResponseTimes,%ld,%ld,%ld,%ld,%ld,%d\n", service_time, delta_time, sent_time, recv_time, iter_time, src_context);
+}
+
+bool should_generate_packet_this_cycle() {
+    if (!start_message_received) {
+        return false;
+    }
+    if (this_iter_cycles_start >= next_threshold) {
+        next_threshold = this_iter_cycles_start + (uint64_t)(*gen_dist)(*gen_rand);
+        return true;
+    }
+    return false;
+}
+
+uint64_t get_service_time() {
+    if (strcmp(dist_type, "FIXED") == 0) {
+        return fixed_dist_cycles;
+    } else if (strcmp(dist_type, "EXP") == 0) {
+        double exp_value = exp_dist_scale_factor * (*service_exp_dist)(*dist_rand);
+        return std::min(std::max((uint64_t)exp_value, min_service_time), max_service_time);
+    } else if (strcmp(dist_type, "BIMODAL") == 0) {
+        double service_low = (*service_normal_low)(*dist_rand);
+        double service_high = (*service_normal_high)(*dist_rand);
+        int select_high = (*service_select_dist)(*dist_rand);
+        if (select_high) {
+            return std::min(std::max((uint64_t)service_high, min_service_time), max_service_time);
+        } else {
+            return std::min(std::max((uint64_t)service_low, min_service_time), max_service_time);
+        }
+    } else {
+        fprintf(stdout, "Unknown distribution type: %s\n", dist_type);
+        exit(-1);
+    }
+
+}
+
+uint16_t get_next_tx_msg_id() {
+    uint16_t to_return = global_tx_msg_id;
+    global_tx_msg_id++;
+    if (global_tx_msg_id == MAX_TX_MSG_ID) {
+        global_tx_msg_id = 0;
+    }
+    return to_return;
+}
+
+void send_load_packet(uint16_t dst_context, uint64_t service_time, uint64_t sent_time) {
+    // Build the new ethernet/ip packet layers
+    pcpp::EthLayer new_eth_layer(pcpp::MacAddress(LOAD_GEN_MAC), pcpp::MacAddress(NIC_MAC));
+    pcpp::IPv4Layer new_ip_layer(pcpp::IPv4Address(std::string(LOAD_GEN_IP)), pcpp::IPv4Address(std::string(NIC_IP)));
+    new_ip_layer.getIPv4Header()->ipId = htons(1);
+    new_ip_layer.getIPv4Header()->timeToLive = 64;
+    new_ip_layer.getIPv4Header()->protocol = 153; // Protocol code for LNIC
+    uint64_t data_packet_size_bytes = ETHER_HEADER_SIZE + IP_HEADER_SIZE + LNIC_HEADER_SIZE + APP_HEADER_SIZE;
+
+    // Build the new lnic and application packet layers
+    pcpp::LnicLayer new_lnic_layer(0, 0, 0, 0, 0, 0, 0, 0, 0);
+    new_lnic_layer.getLnicHeader()->flags = (uint8_t)LNIC_DATA_FLAG_MASK;
+    new_lnic_layer.getLnicHeader()->msg_len = htons(16);
+    new_lnic_layer.getLnicHeader()->src_context = htons(0);
+    new_lnic_layer.getLnicHeader()->dst_context = htons(dst_context);
+    new_lnic_layer.getLnicHeader()->tx_msg_id = htons(get_next_tx_msg_id());
+    pcpp::AppLayer new_app_layer(service_time, sent_time);
+
+    // Join the layers into a new packet
+    pcpp::Packet new_packet(data_packet_size_bytes);
+    new_packet.addLayer(&new_eth_layer);
+    new_packet.addLayer(&new_ip_layer);
+    new_packet.addLayer(&new_lnic_layer);
+    new_packet.addLayer(&new_app_layer);
+    new_packet.computeCalculateFields();
+
+    // Convert the packet to a switchpacket
+    switchpacket* new_tsp = (switchpacket*)calloc(sizeof(switchpacket), 1);
+    new_tsp->timestamp = this_iter_cycles_start;
+    new_tsp->amtwritten = data_packet_size_bytes / sizeof(uint64_t);
+    new_tsp->amtread = 0;
+    new_tsp->sender = 0;
+    memcpy(new_tsp->dat, new_packet.getRawPacket()->getRawData(), data_packet_size_bytes);
+
+    // Verify and log the switchpacket
+    // TODO: For now we only work with port 0.
+    parsed_packet_t sent_packet;
+    if (!sent_packet.parse(new_tsp)) {
+        fprintf(stdout, "Invalid generated packet.\n");
+        free(new_tsp);
+        return;
+    }
+    print_packet("LOAD", &sent_packet);
+    send_with_priority(0, new_tsp);
+}
+
+void load_gen_hook(switchpacket* tsp) {
+    // Parse and log the incoming packet
+    parsed_packet_t packet;
+    bool is_valid = packet.parse(tsp);
+    if (!is_valid) {
+        fprintf(stdout, "Invalid received packet.\n");
+        return;
+    }
+    print_packet("RECV", &packet);
+
+    // Send ACK+PULL responses to DATA packets
+    // TODO: This only works for one-packet messages for now
+    if (packet.lnic->getLnicHeader()->flags & LNIC_DATA_FLAG_MASK) {
+        // Calculate the ACK+PULL values
+        pcpp::lnichdr* lnic_hdr = packet.lnic->getLnicHeader();
+        uint16_t pull_offset = lnic_hdr->pkt_offset + rtt_pkts;
+        uint8_t flags = LNIC_ACK_FLAG_MASK | LNIC_PULL_FLAG_MASK;
+        uint64_t ack_packet_size_bytes = ETHER_HEADER_SIZE + IP_HEADER_SIZE + LNIC_HEADER_SIZE + APP_HEADER_SIZE;
+
+        // Build the new packet layers
+        pcpp::EthLayer new_eth_layer(packet.eth->getDestMac(), packet.eth->getSourceMac());
+        pcpp::IPv4Layer new_ip_layer(packet.ip->getDstIpAddress(), packet.ip->getSrcIpAddress());
+        new_ip_layer.getIPv4Header()->ipId = htons(1);
+        new_ip_layer.getIPv4Header()->timeToLive = 64;
+        new_ip_layer.getIPv4Header()->protocol = 153; // Protocol code for LNIC
+        pcpp::LnicLayer new_lnic_layer(flags, ntohs(lnic_hdr->dst_context), ntohs(lnic_hdr->src_context),
+                                       ntohs(lnic_hdr->msg_len), lnic_hdr->pkt_offset, pull_offset,
+                                       ntohs(lnic_hdr->tx_msg_id), ntohs(lnic_hdr->buf_ptr), lnic_hdr->buf_size_class);
+        pcpp::AppLayer new_app_layer(0, 0);
+
+        // Join the layers into a new packet
+        pcpp::Packet new_packet(ack_packet_size_bytes);
+        new_packet.addLayer(&new_eth_layer);
+        new_packet.addLayer(&new_ip_layer);
+        new_packet.addLayer(&new_lnic_layer);
+        new_packet.addLayer(&new_app_layer);
+        new_packet.computeCalculateFields();
+
+        // Convert the packet to a switchpacket
+        switchpacket* new_tsp = (switchpacket*)calloc(sizeof(switchpacket), 1);
+        new_tsp->timestamp = tsp->timestamp;
+        new_tsp->amtwritten = ack_packet_size_bytes / sizeof(uint64_t);
+        new_tsp->amtread = 0;
+        new_tsp->sender = 0;
+        memcpy(new_tsp->dat, new_packet.getRawPacket()->getRawData(), ack_packet_size_bytes);
+
+        // Verify and log the switchpacket
+        // TODO: For now we only work with port 0.
+        parsed_packet_t sent_packet;
+        if (!sent_packet.parse(new_tsp)) {
+            fprintf(stdout, "Invalid sent packet.\n");
+            free(new_tsp);
+            return;
+        }
+        print_packet("SEND", &sent_packet);
+        send_with_priority(0, new_tsp);
+
+        // Check for nanoPU startup messages
+        if (!start_message_received) {
+            if(count_start_message()) {
+                start_message_received = true;
+            }
+        } else {
+            log_packet_response_time(&packet);
+        }
+    }
+}
+
+// Figure out which load packets to generate.
+// TODO: This should really have an enum instead of a strcmp.
+void generate_load_packets() {
+    if (!should_generate_packet_this_cycle()) {
+        return;
+    }
+    uint64_t service_time = get_service_time();
+    uint64_t sent_time = this_iter_cycles_start; // TODO: Check this
+
+    if (strcmp(test_type, "ONE_CONTEXT_FOUR_CORES") == 0) {
+        send_load_packet(0, service_time, sent_time);
+    } else if (strcmp(test_type, "FOUR_CONTEXTS_FOUR_CORES") == 0) {
+        send_load_packet(rand() % 4, service_time, sent_time);
+    } else if ((strcmp(test_type, "TWO_CONTEXTS_FOUR_SHARED_CORES") == 0) ||
+               (strcmp(test_type, "DIF_PRIORITY_LNIC_DRIVEN") == 0) ||
+               (strcmp(test_type, "DIF_PRIORITY_TIMER_DRIVEN") == 0) ||
+               (strcmp(test_type, "HIGH_PRIORITY_C1_STALL") == 0) ||
+               (strcmp(test_type, "LOW_PRIORITY_C1_STALL") == 0)) {
+        send_load_packet(rand() % 2, service_time, sent_time);
+    } else {
+        fprintf(stdout, "Unknown test type: %s\n", test_type);
+        exit(-1);
+    }
+}
+
+// Load generator specific code end.
+#endif
 
 void send_with_priority(uint16_t port, switchpacket* tsp) {
     uint8_t lnic_header_flags = *((uint8_t*)tsp->dat + ETHER_HEADER_SIZE + IP_HEADER_SIZE);
@@ -403,6 +663,19 @@ int main (int argc, char *argv[]) {
     bandwidth = atoi(argv[3]);
     HIGH_PRIORITY_OBUF_SIZE = atoi(argv[4]);
     LOW_PRIORITY_OBUF_SIZE = atoi(argv[5]);
+
+    POISSON_LAMBDA = 1.0 / (double)atoi(argv[8]);
+
+#ifdef USE_LOAD_GEN
+    double request_rate_lambda = 1.0 / (double)request_rate_lambda_inverse;
+    gen_rand = new std::default_random_engine;
+    gen_dist = new std::exponential_distribution<double>(request_rate_lambda);
+    dist_rand = new std::default_random_engine;
+    service_exp_dist = new std::exponential_distribution<double>(exp_dist_decay_const);
+    service_normal_high = new std::normal_distribution<double>(bimodal_dist_high_mean, bimodal_dist_high_stdev);
+    service_normal_low = new std::normal_distribution<double>(bimodal_dist_low_mean, bimodal_dist_low_stdev);
+    service_select_dist = new std::binomial_distribution<int>(1, bimodal_dist_fraction_high);
+#endif
 
     simplify_frac(bandwidth, 200, &throttle_numer, &throttle_denom);
 

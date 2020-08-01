@@ -234,6 +234,25 @@ class RuntimeHWDB:
 class InnerRuntimeConfiguration:
     """ Pythonic version of config_runtime.ini """
 
+    class LoadGenStats:
+        use_load_gen = None
+        test_type = None
+        dist_type = None
+        request_rate_lambda_inverse = None
+        min_service_time = None
+        max_service_time = None
+        exp_dist_scale_factor = None
+        exp_dist_decay_const = None
+        bimodal_dist_high_mean = None
+        bimodal_dist_high_stdev = None
+        bimodal_dist_low_mean = None
+        bimodal_dist_low_stdev = None
+        bimodal_dist_fraction_high = None
+        fixed_dist_cycles = None
+        c1_stall_factor = None
+        c1_stall_freq = None
+        rtt_pkts = None
+
     def __init__(self, runtimeconfigfile, configoverridedata):
         runtime_configfile = ConfigParser.ConfigParser(allow_no_value=True)
         runtime_configfile.read(runtimeconfigfile)
@@ -282,6 +301,29 @@ class InnerRuntimeConfiguration:
         self.low_priority_obuf_size = int(runtime_dict['targetconfig']['low_priority_obuf_size'])
         self.default_timeout_cycles = int(runtime_dict['targetconfig']['timeout_cycles'])
         self.default_rtt_pkts = int(runtime_dict['targetconfig']['rtt_pkts'])
+
+        if 'load_gen' in runtime_dict:
+            self.load_gen_stats = LoadGenStats()
+            self.load_gen_stats.use_load_gen = runtime_dict['load_gen']['use_load_gen'] == "yes"
+            self.load_gen_stats.test_type = runtime_dict['load_gen']['test_type']
+            self.load_gen_stats.dist_type = runtime_dict['load_gen']['dist_type']
+            self.load_gen_stats.request_rate_lambda_inverse = runtime_dict['load_gen']['request_rate_lambda_inverse']
+            self.load_gen_stats.min_service_time = runtime_dict['load_gen']['min_service_time']
+            self.load_gen_stats.max_service_time = runtime_dict['load_gen']['max_service_time']
+            self.load_gen_stats.exp_dist_scale_factor = runtime_dict['load_gen']['exp_dist_scale_factor']
+            self.load_gen_stats.exp_dist_decay_const = runtime_dict['load_gen']['exp_dist_decay_const']
+            self.load_gen_stats.bimodal_dist_high_mean = runtime_dict['load_gen']['bimodal_dist_high_mean']
+            self.load_gen_stats.bimodal_dist_high_stdev = runtime_dict['load_gen']['bimodal_dist_high_stdev']
+            self.load_gen_stats.bimodal_dist_low_mean = runtime_dict['load_gen']['bimodal_dist_low_mean']
+            self.load_gen_stats.bimodal_dist_low_stdev = runtime_dict['load_gen']['bimodal_dist_low_stdev']
+            self.load_gen_stats.bimodal_dist_fraction_high = runtime_dict['load_gen']['bimodal_dist_fraction_high']
+            self.load_gen_stats.fixed_dist_cycles = runtime_dict['load_gen']['fixed_dist_cycles']
+            self.load_gen_stats.c1_stall_factor = runtime_dict['load_gen']['c1_stall_factor']
+            self.load_gen_stats.c1_stall_freq = runtime_dict['load_gen']['c1_stall_freq']
+            self.load_gen_stats.rtt_pkts = str(self.default_rtt_pkts)
+        else:
+            self.load_gen_stats = LoadGenStats()
+            self.load_gen_stats.use_load_gen = False
         # Default values
         self.trace_enable = False
         self.trace_select = "0"
@@ -362,7 +404,8 @@ class RuntimeConfig:
             self.innerconf.low_priority_obuf_size,
             self.innerconf.wait_for_all_sims,
             self.innerconf.default_timeout_cycles,
-            self.innerconf.default_rtt_pkts)
+            self.innerconf.default_rtt_pkts,
+            self.innerconf.load_gen_stats)
 
     def launch_run_farm(self):
         """ directly called by top-level launchrunfarm command. """
