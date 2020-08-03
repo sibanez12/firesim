@@ -101,7 +101,7 @@ uint64_t this_iter_cycles_start = 0;
 #define LNIC_PULL_FLAG_MASK        0b1000
 #define LNIC_CHOP_FLAG_MASK        0b10000
 #define LNIC_HEADER_MSG_LEN_OFFSET 5
-#define LNIC_PACKET_CHOPPED_SIZE   128 // Bytes, the minimum L-NIC packet size
+#define LNIC_PACKET_CHOPPED_SIZE   72 // Bytes, the minimum L-NIC packet size
 #define LNIC_HEADER_SIZE           30
 
 // Comment this out to disable pkt trimming
