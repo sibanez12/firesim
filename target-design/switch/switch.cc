@@ -108,9 +108,9 @@ uint64_t this_iter_cycles_start = 0;
 #define TRIM_PKTS
 
 // TODO: these should really be exposed via config_runtime.ini
-// #define LOG_QUEUE_SIZE
-// #define LOG_EVENTS
-// #define LOG_ALL_PACKETS
+#define LOG_QUEUE_SIZE
+#define LOG_EVENTS
+#define LOG_ALL_PACKETS
 
 // Pull in load generator parameters, if any
 #define LOADGENSTATS
