@@ -1,0 +1,75 @@
+Script started on Sun 09 Aug 2020 08:51:38 PM UTC
+Using link latency: 140
+Using switching latency: 0
+BW throttle set to 1/1
+High priority obuf size: 4375
+Low priority obuf size: 4375
+&&CSV&&QueueSize,0,0,0,0
+&&CSV&&QueueSize,0,1,0,0
+&&CSV&&QueueSize,0,2,0,0
+&&CSV&&QueueSize,0,3,0,0
+&&CSV&&QueueSize,0,4,0,0
+&&CSV&&QueueSize,0,5,0,0
+&&CSV&&QueueSize,0,6,0,0
+&&CSV&&QueueSize,0,7,0,0
+waiting for clients to connect
+SocketServerPort 0 accepted client
+waiting for clients to connect
+SocketServerPort 1 accepted client
+waiting for clients to connect
+SocketServerPort 2 accepted client
+waiting for clients to connect
+SocketServerPort 3 accepted client
+waiting for clients to connect
+SocketServerPort 4 accepted client
+waiting for clients to connect
+SocketServerPort 5 accepted client
+waiting for clients to connect
+SocketServerPort 6 accepted client
+waiting for clients to connect
+SocketServerPort 7 accepted client
+74177040: IP(src=10.0.0.3, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+74177040: IP(src=10.0.0.5, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+74177040: IP(src=10.0.0.8, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+74177040: IP(src=10.0.0.9, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+74177040: IP(src=10.0.0.7, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+&&CSV&&Events,DroppedData,74177040,0
+74177040: IP(src=10.0.0.4, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+&&CSV&&Events,DroppedData,74177040,0
+74177040: IP(src=10.0.0.6, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+&&CSV&&Events,DroppedData,74177040,0
+&&CSV&&QueueSize,74177040,0,0,4352
+&&CSV&&QueueSize,74177180,0,0,3264
+&&CSV&&QueueSize,74177320,0,0,2176
+&&CSV&&QueueSize,74177460,0,0,1088
+74177621: IP(src=10.0.0.2, dst=10.0.0.3), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=1
+&&CSV&&QueueSize,74177600,0,0,0
+&&CSV&&QueueSize,74177600,1,128,0
+74177761: IP(src=10.0.0.2, dst=10.0.0.5), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=3
+&&CSV&&QueueSize,74177740,1,0,0
+&&CSV&&QueueSize,74177740,3,128,0
+74177901: IP(src=10.0.0.2, dst=10.0.0.8), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=6
+&&CSV&&QueueSize,74177880,3,0,0
+&&CSV&&QueueSize,74177880,6,128,0
+74178041: IP(src=10.0.0.2, dst=10.0.0.9), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=7
+&&CSV&&QueueSize,74178020,6,0,0
+&&CSV&&QueueSize,74178020,7,128,0
+&&CSV&&QueueSize,74178160,7,0,0
+74181240: IP(src=10.0.0.4, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+74181240: IP(src=10.0.0.6, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+74181240: IP(src=10.0.0.7, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+&&CSV&&QueueSize,74181240,0,0,3264
+&&CSV&&QueueSize,74181380,0,0,2176
+&&CSV&&QueueSize,74181520,0,0,1088
+&&CSV&&QueueSize,74181660,0,0,0
+74181821: IP(src=10.0.0.2, dst=10.0.0.4), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=2
+&&CSV&&QueueSize,74181800,2,128,0
+74181961: IP(src=10.0.0.2, dst=10.0.0.6), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=4
+&&CSV&&QueueSize,74181940,2,0,0
+&&CSV&&QueueSize,74181940,4,128,0
+74182101: IP(src=10.0.0.2, dst=10.0.0.7), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=5
+&&CSV&&QueueSize,74182080,4,0,0
+&&CSV&&QueueSize,74182080,5,128,0
+&&CSV&&QueueSize,74182220,5,0,0
+
+Script done on Sun 09 Aug 2020 08:53:18 PM UTC

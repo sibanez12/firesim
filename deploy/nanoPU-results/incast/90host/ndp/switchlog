@@ -1,0 +1,708 @@
+Script started on Tue 11 Aug 2020 09:49:06 PM UTC
+Using link latency: 1218
+Using switching latency: 0
+BW throttle set to 1/1
+High priority obuf size: 81600
+Low priority obuf size: 81600
+&&CSV&&QueueSize,0,0,0,0
+&&CSV&&QueueSize,0,1,0,0
+&&CSV&&QueueSize,0,2,0,0
+&&CSV&&QueueSize,0,3,0,0
+&&CSV&&QueueSize,0,4,0,0
+&&CSV&&QueueSize,0,5,0,0
+&&CSV&&QueueSize,0,6,0,0
+&&CSV&&QueueSize,0,7,0,0
+&&CSV&&QueueSize,0,8,0,0
+&&CSV&&QueueSize,0,9,0,0
+&&CSV&&QueueSize,0,10,0,0
+&&CSV&&QueueSize,0,11,0,0
+&&CSV&&QueueSize,0,12,0,0
+&&CSV&&QueueSize,0,13,0,0
+&&CSV&&QueueSize,0,14,0,0
+&&CSV&&QueueSize,0,15,0,0
+&&CSV&&QueueSize,0,16,0,0
+&&CSV&&QueueSize,0,17,0,0
+&&CSV&&QueueSize,0,18,0,0
+&&CSV&&QueueSize,0,19,0,0
+&&CSV&&QueueSize,0,20,0,0
+&&CSV&&QueueSize,0,21,0,0
+&&CSV&&QueueSize,0,22,0,0
+&&CSV&&QueueSize,0,23,0,0
+&&CSV&&QueueSize,0,24,0,0
+&&CSV&&QueueSize,0,25,0,0
+&&CSV&&QueueSize,0,26,0,0
+&&CSV&&QueueSize,0,27,0,0
+&&CSV&&QueueSize,0,28,0,0
+&&CSV&&QueueSize,0,29,0,0
+&&CSV&&QueueSize,0,30,0,0
+&&CSV&&QueueSize,0,31,0,0
+&&CSV&&QueueSize,0,32,0,0
+&&CSV&&QueueSize,0,33,0,0
+&&CSV&&QueueSize,0,34,0,0
+&&CSV&&QueueSize,0,35,0,0
+&&CSV&&QueueSize,0,36,0,0
+&&CSV&&QueueSize,0,37,0,0
+&&CSV&&QueueSize,0,38,0,0
+&&CSV&&QueueSize,0,39,0,0
+&&CSV&&QueueSize,0,40,0,0
+&&CSV&&QueueSize,0,41,0,0
+&&CSV&&QueueSize,0,42,0,0
+&&CSV&&QueueSize,0,43,0,0
+&&CSV&&QueueSize,0,44,0,0
+&&CSV&&QueueSize,0,45,0,0
+&&CSV&&QueueSize,0,46,0,0
+&&CSV&&QueueSize,0,47,0,0
+&&CSV&&QueueSize,0,48,0,0
+&&CSV&&QueueSize,0,49,0,0
+&&CSV&&QueueSize,0,50,0,0
+&&CSV&&QueueSize,0,51,0,0
+&&CSV&&QueueSize,0,52,0,0
+&&CSV&&QueueSize,0,53,0,0
+&&CSV&&QueueSize,0,54,0,0
+&&CSV&&QueueSize,0,55,0,0
+&&CSV&&QueueSize,0,56,0,0
+&&CSV&&QueueSize,0,57,0,0
+&&CSV&&QueueSize,0,58,0,0
+&&CSV&&QueueSize,0,59,0,0
+&&CSV&&QueueSize,0,60,0,0
+&&CSV&&QueueSize,0,61,0,0
+&&CSV&&QueueSize,0,62,0,0
+&&CSV&&QueueSize,0,63,0,0
+&&CSV&&QueueSize,0,64,0,0
+&&CSV&&QueueSize,0,65,0,0
+&&CSV&&QueueSize,0,66,0,0
+&&CSV&&QueueSize,0,67,0,0
+&&CSV&&QueueSize,0,68,0,0
+&&CSV&&QueueSize,0,69,0,0
+&&CSV&&QueueSize,0,70,0,0
+&&CSV&&QueueSize,0,71,0,0
+&&CSV&&QueueSize,0,72,0,0
+&&CSV&&QueueSize,0,73,0,0
+&&CSV&&QueueSize,0,74,0,0
+&&CSV&&QueueSize,0,75,0,0
+&&CSV&&QueueSize,0,76,0,0
+&&CSV&&QueueSize,0,77,0,0
+&&CSV&&QueueSize,0,78,0,0
+&&CSV&&QueueSize,0,79,0,0
+&&CSV&&QueueSize,0,80,0,0
+&&CSV&&QueueSize,0,81,0,0
+&&CSV&&QueueSize,0,82,0,0
+&&CSV&&QueueSize,0,83,0,0
+&&CSV&&QueueSize,0,84,0,0
+&&CSV&&QueueSize,0,85,0,0
+&&CSV&&QueueSize,0,86,0,0
+&&CSV&&QueueSize,0,87,0,0
+&&CSV&&QueueSize,0,88,0,0
+&&CSV&&QueueSize,0,89,0,0
+waiting for clients to connect
+SocketServerPort 0 accepted client
+waiting for clients to connect
+SocketServerPort 1 accepted client
+waiting for clients to connect
+SocketServerPort 2 accepted client
+waiting for clients to connect
+SocketServerPort 3 accepted client
+waiting for clients to connect
+SocketServerPort 4 accepted client
+waiting for clients to connect
+SocketServerPort 5 accepted client
+waiting for clients to connect
+SocketServerPort 6 accepted client
+waiting for clients to connect
+SocketServerPort 7 accepted client
+waiting for clients to connect
+SocketServerPort 8 accepted client
+waiting for clients to connect
+SocketServerPort 9 accepted client
+waiting for clients to connect
+SocketServerPort 10 accepted client
+waiting for clients to connect
+SocketServerPort 11 accepted client
+waiting for clients to connect
+SocketServerPort 12 accepted client
+waiting for clients to connect
+SocketServerPort 13 accepted client
+waiting for clients to connect
+SocketServerPort 14 accepted client
+waiting for clients to connect
+SocketServerPort 15 accepted client
+waiting for clients to connect
+SocketServerPort 16 accepted client
+waiting for clients to connect
+SocketServerPort 17 accepted client
+waiting for clients to connect
+SocketServerPort 18 accepted client
+waiting for clients to connect
+SocketServerPort 19 accepted client
+waiting for clients to connect
+SocketServerPort 20 accepted client
+waiting for clients to connect
+SocketServerPort 21 accepted client
+waiting for clients to connect
+SocketServerPort 22 accepted client
+waiting for clients to connect
+SocketServerPort 23 accepted client
+waiting for clients to connect
+SocketServerPort 24 accepted client
+waiting for clients to connect
+SocketServerPort 25 accepted client
+waiting for clients to connect
+SocketServerPort 26 accepted client
+waiting for clients to connect
+SocketServerPort 27 accepted client
+waiting for clients to connect
+SocketServerPort 28 accepted client
+waiting for clients to connect
+SocketServerPort 29 accepted client
+waiting for clients to connect
+SocketServerPort 30 accepted client
+waiting for clients to connect
+SocketServerPort 31 accepted client
+waiting for clients to connect
+SocketServerPort 32 accepted client
+waiting for clients to connect
+SocketServerPort 33 accepted client
+waiting for clients to connect
+SocketServerPort 34 accepted client
+waiting for clients to connect
+SocketServerPort 35 accepted client
+waiting for clients to connect
+SocketServerPort 36 accepted client
+waiting for clients to connect
+SocketServerPort 37 accepted client
+waiting for clients to connect
+SocketServerPort 38 accepted client
+waiting for clients to connect
+SocketServerPort 39 accepted client
+waiting for clients to connect
+SocketServerPort 40 accepted client
+waiting for clients to connect
+SocketServerPort 41 accepted client
+waiting for clients to connect
+SocketServerPort 42 accepted client
+waiting for clients to connect
+SocketServerPort 43 accepted client
+waiting for clients to connect
+SocketServerPort 44 accepted client
+waiting for clients to connect
+SocketServerPort 45 accepted client
+waiting for clients to connect
+SocketServerPort 46 accepted client
+waiting for clients to connect
+SocketServerPort 47 accepted client
+waiting for clients to connect
+SocketServerPort 48 accepted client
+waiting for clients to connect
+SocketServerPort 49 accepted client
+waiting for clients to connect
+SocketServerPort 50 accepted client
+waiting for clients to connect
+SocketServerPort 51 accepted client
+waiting for clients to connect
+SocketServerPort 52 accepted client
+waiting for clients to connect
+SocketServerPort 53 accepted client
+waiting for clients to connect
+SocketServerPort 54 accepted client
+waiting for clients to connect
+SocketServerPort 55 accepted client
+waiting for clients to connect
+SocketServerPort 56 accepted client
+waiting for clients to connect
+SocketServerPort 57 accepted client
+waiting for clients to connect
+SocketServerPort 58 accepted client
+waiting for clients to connect
+SocketServerPort 59 accepted client
+waiting for clients to connect
+SocketServerPort 60 accepted client
+waiting for clients to connect
+SocketServerPort 61 accepted client
+waiting for clients to connect
+SocketServerPort 62 accepted client
+waiting for clients to connect
+SocketServerPort 63 accepted client
+waiting for clients to connect
+SocketServerPort 64 accepted client
+waiting for clients to connect
+SocketServerPort 65 accepted client
+waiting for clients to connect
+SocketServerPort 66 accepted client
+waiting for clients to connect
+SocketServerPort 67 accepted client
+waiting for clients to connect
+SocketServerPort 68 accepted client
+waiting for clients to connect
+SocketServerPort 69 accepted client
+waiting for clients to connect
+SocketServerPort 70 accepted client
+waiting for clients to connect
+SocketServerPort 71 accepted client
+waiting for clients to connect
+SocketServerPort 72 accepted client
+waiting for clients to connect
+SocketServerPort 73 accepted client
+waiting for clients to connect
+SocketServerPort 74 accepted client
+waiting for clients to connect
+SocketServerPort 75 accepted client
+waiting for clients to connect
+SocketServerPort 76 accepted client
+waiting for clients to connect
+SocketServerPort 77 accepted client
+waiting for clients to connect
+SocketServerPort 78 accepted client
+waiting for clients to connect
+SocketServerPort 79 accepted client
+waiting for clients to connect
+SocketServerPort 80 accepted client
+waiting for clients to connect
+SocketServerPort 81 accepted client
+waiting for clients to connect
+SocketServerPort 82 accepted client
+waiting for clients to connect
+SocketServerPort 83 accepted client
+waiting for clients to connect
+SocketServerPort 84 accepted client
+waiting for clients to connect
+SocketServerPort 85 accepted client
+waiting for clients to connect
+SocketServerPort 86 accepted client
+waiting for clients to connect
+SocketServerPort 87 accepted client
+waiting for clients to connect
+SocketServerPort 88 accepted client
+waiting for clients to connect
+SocketServerPort 89 accepted client
+70168538: IP(src=10.0.0.12, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.14, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.18, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.26, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.42, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.74, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.91, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.90, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.89, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.88, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.87, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.86, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.85, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.84, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.83, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.82, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.81, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.80, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.79, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.78, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.77, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.76, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.73, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.75, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.72, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.71, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.70, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.69, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.68, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.67, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.66, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.65, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.64, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.63, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.62, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.61, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.60, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.59, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.58, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.57, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.56, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.55, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.54, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.53, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.52, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.51, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.50, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.49, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.48, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.47, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.46, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.45, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.44, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.41, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.43, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.40, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.39, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.38, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.37, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.36, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.35, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.34, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.33, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.32, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.31, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.30, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.29, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.28, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.25, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.27, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.24, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.23, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.22, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.21, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70168538: IP(src=10.0.0.20, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+&&CSV&&Events,Chopped,70167762,0
+70168538: IP(src=10.0.0.17, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+&&CSV&&Events,Chopped,70167762,0
+70168538: IP(src=10.0.0.19, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+&&CSV&&Events,Chopped,70167762,0
+70168538: IP(src=10.0.0.16, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+&&CSV&&Events,Chopped,70167762,0
+70168538: IP(src=10.0.0.13, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+&&CSV&&Events,Chopped,70167762,0
+70168538: IP(src=10.0.0.15, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+&&CSV&&Events,Chopped,70167762,0
+&&CSV&&QueueSize,70167762,0,432,80512
+&&CSV&&QueueSize,70168980,0,0,78336
+&&CSV&&QueueSize,70170198,0,0,69632
+&&CSV&&QueueSize,70171416,0,0,60928
+70173431: IP(src=10.0.0.2, dst=10.0.0.20), LNIC(flags= NACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=18
+70173447: IP(src=10.0.0.2, dst=10.0.0.17), LNIC(flags= NACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=15
+70173463: IP(src=10.0.0.2, dst=10.0.0.19), LNIC(flags= NACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=17
+70173479: IP(src=10.0.0.2, dst=10.0.0.16), LNIC(flags= NACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=14
+70173495: IP(src=10.0.0.2, dst=10.0.0.13), LNIC(flags= NACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=11
+70173511: IP(src=10.0.0.2, dst=10.0.0.15), LNIC(flags= NACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=13
+70173527: IP(src=10.0.0.2, dst=10.0.0.12), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=10
+70173554: IP(src=10.0.0.2, dst=10.0.0.17), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=15
+70173621: IP(src=10.0.0.2, dst=10.0.0.14), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=12
+70173677: IP(src=10.0.0.2, dst=10.0.0.19), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=17
+70173800: IP(src=10.0.0.2, dst=10.0.0.16), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=14
+&&CSV&&QueueSize,70172634,0,0,52224
+&&CSV&&QueueSize,70172634,10,128,0
+&&CSV&&QueueSize,70172634,11,128,0
+&&CSV&&QueueSize,70172634,12,128,0
+&&CSV&&QueueSize,70172634,13,128,0
+&&CSV&&QueueSize,70172634,14,256,0
+&&CSV&&QueueSize,70172634,15,256,0
+&&CSV&&QueueSize,70172634,17,256,0
+&&CSV&&QueueSize,70172634,18,128,0
+70173873: IP(src=10.0.0.2, dst=10.0.0.18), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=16
+70173923: IP(src=10.0.0.2, dst=10.0.0.13), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=11
+70174009: IP(src=10.0.0.2, dst=10.0.0.26), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=24
+70174046: IP(src=10.0.0.2, dst=10.0.0.15), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=13
+70174145: IP(src=10.0.0.2, dst=10.0.0.42), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=40
+70174169: IP(src=10.0.0.2, dst=10.0.0.12), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=10
+70174281: IP(src=10.0.0.2, dst=10.0.0.74), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=72
+70174297: IP(src=10.0.0.2, dst=10.0.0.14), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=12
+70174415: IP(src=10.0.0.2, dst=10.0.0.18), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=16
+70174431: IP(src=10.0.0.2, dst=10.0.0.91), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=89
+70174538: IP(src=10.0.0.2, dst=10.0.0.26), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=24
+70174554: IP(src=10.0.0.2, dst=10.0.0.90), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=88
+70174661: IP(src=10.0.0.2, dst=10.0.0.42), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=40
+70174689: IP(src=10.0.0.2, dst=10.0.0.89), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=87
+70174784: IP(src=10.0.0.2, dst=10.0.0.74), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=72
+70174825: IP(src=10.0.0.2, dst=10.0.0.88), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=86
+70174907: IP(src=10.0.0.2, dst=10.0.0.91), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=89
+70175030: IP(src=10.0.0.2, dst=10.0.0.90), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=88
+&&CSV&&QueueSize,70173852,0,0,43520
+&&CSV&&QueueSize,70173852,14,0,0
+&&CSV&&QueueSize,70173852,15,0,0
+&&CSV&&QueueSize,70173852,16,256,0
+&&CSV&&QueueSize,70173852,17,0,0
+&&CSV&&QueueSize,70173852,18,0,0
+&&CSV&&QueueSize,70173852,24,256,0
+&&CSV&&QueueSize,70173852,40,256,0
+&&CSV&&QueueSize,70173852,72,256,0
+&&CSV&&QueueSize,70173852,86,128,0
+&&CSV&&QueueSize,70173852,87,128,0
+&&CSV&&QueueSize,70173852,88,256,0
+&&CSV&&QueueSize,70173852,89,256,0
+70175091: IP(src=10.0.0.2, dst=10.0.0.87), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=85
+70175153: IP(src=10.0.0.2, dst=10.0.0.89), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=87
+70175227: IP(src=10.0.0.2, dst=10.0.0.86), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=84
+70175276: IP(src=10.0.0.2, dst=10.0.0.88), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=86
+70175363: IP(src=10.0.0.2, dst=10.0.0.85), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=83
+70175399: IP(src=10.0.0.2, dst=10.0.0.87), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=85
+70175499: IP(src=10.0.0.2, dst=10.0.0.84), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=82
+70175522: IP(src=10.0.0.2, dst=10.0.0.86), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=84
+70175635: IP(src=10.0.0.2, dst=10.0.0.83), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=81
+70175651: IP(src=10.0.0.2, dst=10.0.0.85), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=83
+70175768: IP(src=10.0.0.2, dst=10.0.0.84), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=82
+70175784: IP(src=10.0.0.2, dst=10.0.0.82), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=80
+70175891: IP(src=10.0.0.2, dst=10.0.0.83), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=81
+70175907: IP(src=10.0.0.2, dst=10.0.0.81), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=79
+70176014: IP(src=10.0.0.2, dst=10.0.0.82), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=80
+70176043: IP(src=10.0.0.2, dst=10.0.0.80), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=78
+70176137: IP(src=10.0.0.2, dst=10.0.0.81), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=79
+70176260: IP(src=10.0.0.2, dst=10.0.0.80), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=78
+&&CSV&&QueueSize,70175070,0,0,34816
+&&CSV&&QueueSize,70175070,10,0,0
+&&CSV&&QueueSize,70175070,11,0,0
+&&CSV&&QueueSize,70175070,12,0,0
+&&CSV&&QueueSize,70175070,13,0,0
+&&CSV&&QueueSize,70175070,16,0,0
+&&CSV&&QueueSize,70175070,24,0,0
+&&CSV&&QueueSize,70175070,40,0,0
+&&CSV&&QueueSize,70175070,72,0,0
+&&CSV&&QueueSize,70175070,78,256,0
+&&CSV&&QueueSize,70175070,79,256,0
+&&CSV&&QueueSize,70175070,80,256,0
+&&CSV&&QueueSize,70175070,81,256,0
+&&CSV&&QueueSize,70175070,82,256,0
+&&CSV&&QueueSize,70175070,83,256,0
+&&CSV&&QueueSize,70175070,84,256,0
+&&CSV&&QueueSize,70175070,85,256,0
+&&CSV&&QueueSize,70175070,88,0,0
+&&CSV&&QueueSize,70175070,89,0,0
+70176309: IP(src=10.0.0.2, dst=10.0.0.79), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=77
+70176383: IP(src=10.0.0.2, dst=10.0.0.79), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=77
+70176445: IP(src=10.0.0.2, dst=10.0.0.78), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=76
+70176506: IP(src=10.0.0.2, dst=10.0.0.78), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=76
+70176581: IP(src=10.0.0.2, dst=10.0.0.77), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=75
+70176629: IP(src=10.0.0.2, dst=10.0.0.77), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=75
+70176717: IP(src=10.0.0.2, dst=10.0.0.76), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=74
+70176752: IP(src=10.0.0.2, dst=10.0.0.76), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=74
+70176853: IP(src=10.0.0.2, dst=10.0.0.73), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=71
+70176875: IP(src=10.0.0.2, dst=10.0.0.73), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=71
+70176989: IP(src=10.0.0.2, dst=10.0.0.75), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=73
+70177005: IP(src=10.0.0.2, dst=10.0.0.75), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=73
+70177125: IP(src=10.0.0.2, dst=10.0.0.72), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=70
+70177261: IP(src=10.0.0.2, dst=10.0.0.71), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=69
+&&CSV&&QueueSize,70176288,0,0,26112
+&&CSV&&QueueSize,70176288,69,128,0
+&&CSV&&QueueSize,70176288,70,128,0
+&&CSV&&QueueSize,70176288,71,256,0
+&&CSV&&QueueSize,70176288,73,256,0
+&&CSV&&QueueSize,70176288,74,256,0
+&&CSV&&QueueSize,70176288,75,256,0
+&&CSV&&QueueSize,70176288,76,256,0
+&&CSV&&QueueSize,70176288,77,256,0
+&&CSV&&QueueSize,70176288,78,0,0
+&&CSV&&QueueSize,70176288,79,0,0
+&&CSV&&QueueSize,70176288,80,0,0
+&&CSV&&QueueSize,70176288,81,0,0
+&&CSV&&QueueSize,70176288,82,0,0
+&&CSV&&QueueSize,70176288,83,0,0
+&&CSV&&QueueSize,70176288,84,0,0
+&&CSV&&QueueSize,70176288,85,0,0
+&&CSV&&QueueSize,70176288,86,0,0
+&&CSV&&QueueSize,70176288,87,0,0
+70177527: IP(src=10.0.0.2, dst=10.0.0.70), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=68
+70177663: IP(src=10.0.0.2, dst=10.0.0.69), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=67
+70177799: IP(src=10.0.0.2, dst=10.0.0.68), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=66
+70177935: IP(src=10.0.0.2, dst=10.0.0.67), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=65
+70178071: IP(src=10.0.0.2, dst=10.0.0.66), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=64
+70178207: IP(src=10.0.0.2, dst=10.0.0.65), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=63
+70178326: IP(src=10.0.0.20, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70178343: IP(src=10.0.0.2, dst=10.0.0.64), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=62
+70178449: IP(src=10.0.0.17, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70178479: IP(src=10.0.0.2, dst=10.0.0.63), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=61
+70178572: IP(src=10.0.0.19, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+&&CSV&&QueueSize,70177506,0,0,20672
+&&CSV&&QueueSize,70177506,61,128,0
+&&CSV&&QueueSize,70177506,62,128,0
+&&CSV&&QueueSize,70177506,63,128,0
+&&CSV&&QueueSize,70177506,64,128,0
+&&CSV&&QueueSize,70177506,65,128,0
+&&CSV&&QueueSize,70177506,66,128,0
+&&CSV&&QueueSize,70177506,67,128,0
+&&CSV&&QueueSize,70177506,68,128,0
+&&CSV&&QueueSize,70177506,69,0,0
+&&CSV&&QueueSize,70177506,70,0,0
+&&CSV&&QueueSize,70177506,71,0,0
+&&CSV&&QueueSize,70177506,73,0,0
+&&CSV&&QueueSize,70177506,74,0,0
+&&CSV&&QueueSize,70177506,75,0,0
+&&CSV&&QueueSize,70177506,76,0,0
+&&CSV&&QueueSize,70177506,77,0,0
+70178724: IP(src=10.0.0.16, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70178745: IP(src=10.0.0.2, dst=10.0.0.62), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=60
+70178818: IP(src=10.0.0.13, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70178881: IP(src=10.0.0.2, dst=10.0.0.61), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=59
+70178941: IP(src=10.0.0.15, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+70179017: IP(src=10.0.0.2, dst=10.0.0.60), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=58
+70179153: IP(src=10.0.0.2, dst=10.0.0.59), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=57
+70179289: IP(src=10.0.0.2, dst=10.0.0.58), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=56
+70179425: IP(src=10.0.0.2, dst=10.0.0.57), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=55
+70179561: IP(src=10.0.0.2, dst=10.0.0.56), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=54
+70179697: IP(src=10.0.0.2, dst=10.0.0.55), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=53
+&&CSV&&QueueSize,70178724,0,0,15232
+&&CSV&&QueueSize,70178724,53,128,0
+&&CSV&&QueueSize,70178724,54,128,0
+&&CSV&&QueueSize,70178724,55,128,0
+&&CSV&&QueueSize,70178724,56,128,0
+&&CSV&&QueueSize,70178724,57,128,0
+&&CSV&&QueueSize,70178724,58,128,0
+&&CSV&&QueueSize,70178724,59,128,0
+&&CSV&&QueueSize,70178724,60,128,0
+&&CSV&&QueueSize,70178724,61,0,0
+&&CSV&&QueueSize,70178724,62,0,0
+&&CSV&&QueueSize,70178724,63,0,0
+&&CSV&&QueueSize,70178724,64,0,0
+&&CSV&&QueueSize,70178724,65,0,0
+&&CSV&&QueueSize,70178724,66,0,0
+&&CSV&&QueueSize,70178724,67,0,0
+&&CSV&&QueueSize,70178724,68,0,0
+70179963: IP(src=10.0.0.2, dst=10.0.0.54), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=52
+70180099: IP(src=10.0.0.2, dst=10.0.0.53), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=51
+70180235: IP(src=10.0.0.2, dst=10.0.0.52), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=50
+70180371: IP(src=10.0.0.2, dst=10.0.0.51), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=49
+70180507: IP(src=10.0.0.2, dst=10.0.0.50), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=48
+70180643: IP(src=10.0.0.2, dst=10.0.0.49), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=47
+70180779: IP(src=10.0.0.2, dst=10.0.0.48), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=46
+70180915: IP(src=10.0.0.2, dst=10.0.0.47), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=45
+&&CSV&&QueueSize,70179942,0,0,6528
+&&CSV&&QueueSize,70179942,45,128,0
+&&CSV&&QueueSize,70179942,46,128,0
+&&CSV&&QueueSize,70179942,47,128,0
+&&CSV&&QueueSize,70179942,48,128,0
+&&CSV&&QueueSize,70179942,49,128,0
+&&CSV&&QueueSize,70179942,50,128,0
+&&CSV&&QueueSize,70179942,51,128,0
+&&CSV&&QueueSize,70179942,52,128,0
+&&CSV&&QueueSize,70179942,53,0,0
+&&CSV&&QueueSize,70179942,54,0,0
+&&CSV&&QueueSize,70179942,55,0,0
+&&CSV&&QueueSize,70179942,56,0,0
+&&CSV&&QueueSize,70179942,57,0,0
+&&CSV&&QueueSize,70179942,58,0,0
+&&CSV&&QueueSize,70179942,59,0,0
+&&CSV&&QueueSize,70179942,60,0,0
+70181181: IP(src=10.0.0.2, dst=10.0.0.46), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=44
+70181317: IP(src=10.0.0.2, dst=10.0.0.45), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=43
+70181453: IP(src=10.0.0.2, dst=10.0.0.44), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=42
+70181589: IP(src=10.0.0.2, dst=10.0.0.41), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=39
+70181725: IP(src=10.0.0.2, dst=10.0.0.43), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=41
+70181861: IP(src=10.0.0.2, dst=10.0.0.40), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=38
+70181997: IP(src=10.0.0.2, dst=10.0.0.39), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=37
+70182133: IP(src=10.0.0.2, dst=10.0.0.38), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=36
+&&CSV&&QueueSize,70181160,0,0,0
+&&CSV&&QueueSize,70181160,36,128,0
+&&CSV&&QueueSize,70181160,37,128,0
+&&CSV&&QueueSize,70181160,38,128,0
+&&CSV&&QueueSize,70181160,39,128,0
+&&CSV&&QueueSize,70181160,41,128,0
+&&CSV&&QueueSize,70181160,42,128,0
+&&CSV&&QueueSize,70181160,43,128,0
+&&CSV&&QueueSize,70181160,44,128,0
+&&CSV&&QueueSize,70181160,45,0,0
+&&CSV&&QueueSize,70181160,46,0,0
+&&CSV&&QueueSize,70181160,47,0,0
+&&CSV&&QueueSize,70181160,48,0,0
+&&CSV&&QueueSize,70181160,49,0,0
+&&CSV&&QueueSize,70181160,50,0,0
+&&CSV&&QueueSize,70181160,51,0,0
+&&CSV&&QueueSize,70181160,52,0,0
+70182399: IP(src=10.0.0.2, dst=10.0.0.37), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=35
+70182535: IP(src=10.0.0.2, dst=10.0.0.36), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=34
+70182671: IP(src=10.0.0.2, dst=10.0.0.35), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=33
+70182807: IP(src=10.0.0.2, dst=10.0.0.34), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=32
+70182943: IP(src=10.0.0.2, dst=10.0.0.33), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=31
+70183079: IP(src=10.0.0.2, dst=10.0.0.32), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=30
+70183215: IP(src=10.0.0.2, dst=10.0.0.31), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=29
+70183351: IP(src=10.0.0.2, dst=10.0.0.30), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=28
+&&CSV&&QueueSize,70182378,28,128,0
+&&CSV&&QueueSize,70182378,29,128,0
+&&CSV&&QueueSize,70182378,30,128,0
+&&CSV&&QueueSize,70182378,31,128,0
+&&CSV&&QueueSize,70182378,32,128,0
+&&CSV&&QueueSize,70182378,33,128,0
+&&CSV&&QueueSize,70182378,34,128,0
+&&CSV&&QueueSize,70182378,35,128,0
+&&CSV&&QueueSize,70182378,36,0,0
+&&CSV&&QueueSize,70182378,37,0,0
+&&CSV&&QueueSize,70182378,38,0,0
+&&CSV&&QueueSize,70182378,39,0,0
+&&CSV&&QueueSize,70182378,41,0,0
+&&CSV&&QueueSize,70182378,42,0,0
+&&CSV&&QueueSize,70182378,43,0,0
+&&CSV&&QueueSize,70182378,44,0,0
+70183617: IP(src=10.0.0.2, dst=10.0.0.29), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=27
+70183753: IP(src=10.0.0.2, dst=10.0.0.28), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=26
+70183889: IP(src=10.0.0.2, dst=10.0.0.25), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=23
+70184025: IP(src=10.0.0.2, dst=10.0.0.27), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=25
+70184161: IP(src=10.0.0.2, dst=10.0.0.24), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=22
+70184297: IP(src=10.0.0.2, dst=10.0.0.23), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=21
+70184433: IP(src=10.0.0.2, dst=10.0.0.22), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=20
+70184569: IP(src=10.0.0.2, dst=10.0.0.21), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=19
+&&CSV&&QueueSize,70183596,19,128,0
+&&CSV&&QueueSize,70183596,20,128,0
+&&CSV&&QueueSize,70183596,21,128,0
+&&CSV&&QueueSize,70183596,22,128,0
+&&CSV&&QueueSize,70183596,23,128,0
+&&CSV&&QueueSize,70183596,25,128,0
+&&CSV&&QueueSize,70183596,26,128,0
+&&CSV&&QueueSize,70183596,27,128,0
+&&CSV&&QueueSize,70183596,28,0,0
+&&CSV&&QueueSize,70183596,29,0,0
+&&CSV&&QueueSize,70183596,30,0,0
+&&CSV&&QueueSize,70183596,31,0,0
+&&CSV&&QueueSize,70183596,32,0,0
+&&CSV&&QueueSize,70183596,33,0,0
+&&CSV&&QueueSize,70183596,34,0,0
+&&CSV&&QueueSize,70183596,35,0,0
+70184835: IP(src=10.0.0.2, dst=10.0.0.20), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=18
+70184971: IP(src=10.0.0.2, dst=10.0.0.17), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=15
+70185107: IP(src=10.0.0.2, dst=10.0.0.19), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=17
+70185243: IP(src=10.0.0.2, dst=10.0.0.16), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=14
+70185379: IP(src=10.0.0.2, dst=10.0.0.13), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=11
+70185515: IP(src=10.0.0.2, dst=10.0.0.15), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=13
+&&CSV&&QueueSize,70184814,11,128,0
+&&CSV&&QueueSize,70184814,13,128,0
+&&CSV&&QueueSize,70184814,14,128,0
+&&CSV&&QueueSize,70184814,15,128,0
+&&CSV&&QueueSize,70184814,17,128,0
+&&CSV&&QueueSize,70184814,18,128,0
+&&CSV&&QueueSize,70184814,19,0,0
+&&CSV&&QueueSize,70184814,20,0,0
+&&CSV&&QueueSize,70184814,21,0,0
+&&CSV&&QueueSize,70184814,22,0,0
+&&CSV&&QueueSize,70184814,23,0,0
+&&CSV&&QueueSize,70184814,25,0,0
+&&CSV&&QueueSize,70184814,26,0,0
+&&CSV&&QueueSize,70184814,27,0,0
+&&CSV&&QueueSize,70186032,11,0,0
+&&CSV&&QueueSize,70186032,13,0,0
+&&CSV&&QueueSize,70186032,14,0,0
+&&CSV&&QueueSize,70186032,15,0,0
+&&CSV&&QueueSize,70186032,17,0,0
+&&CSV&&QueueSize,70186032,18,0,0
+74178070: IP(src=10.0.0.3, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+74178070: IP(src=10.0.0.5, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+74178070: IP(src=10.0.0.9, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+74178070: IP(src=10.0.0.11, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+74178070: IP(src=10.0.0.8, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+74178070: IP(src=10.0.0.10, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+74178070: IP(src=10.0.0.7, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+74178070: IP(src=10.0.0.4, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+74178070: IP(src=10.0.0.6, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+&&CSV&&QueueSize,74177418,0,0,9792
+&&CSV&&QueueSize,74178636,0,0,5440
+&&CSV&&QueueSize,74179854,0,0,0
+74182963: IP(src=10.0.0.2, dst=10.0.0.3), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=1
+74183099: IP(src=10.0.0.2, dst=10.0.0.5), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=3
+74183235: IP(src=10.0.0.2, dst=10.0.0.9), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=7
+74183371: IP(src=10.0.0.2, dst=10.0.0.11), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=9
+&&CSV&&QueueSize,74182290,1,128,0
+&&CSV&&QueueSize,74182290,3,128,0
+&&CSV&&QueueSize,74182290,7,128,0
+&&CSV&&QueueSize,74182290,9,128,0
+74183529: IP(src=10.0.0.2, dst=10.0.0.8), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=6
+74183665: IP(src=10.0.0.2, dst=10.0.0.10), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=8
+74183801: IP(src=10.0.0.2, dst=10.0.0.7), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=5
+74183937: IP(src=10.0.0.2, dst=10.0.0.4), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=2
+74184073: IP(src=10.0.0.2, dst=10.0.0.6), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=4
+&&CSV&&QueueSize,74183508,1,0,0
+&&CSV&&QueueSize,74183508,2,128,0
+&&CSV&&QueueSize,74183508,3,0,0
+&&CSV&&QueueSize,74183508,4,128,0
+&&CSV&&QueueSize,74183508,5,128,0
+&&CSV&&QueueSize,74183508,6,128,0
+&&CSV&&QueueSize,74183508,7,0,0
+&&CSV&&QueueSize,74183508,8,128,0
+&&CSV&&QueueSize,74183508,9,0,0
+&&CSV&&QueueSize,74184726,2,0,0
+&&CSV&&QueueSize,74184726,4,0,0
+&&CSV&&QueueSize,74184726,5,0,0
+&&CSV&&QueueSize,74184726,6,0,0
+&&CSV&&QueueSize,74184726,8,0,0
+
+Script done on Tue 11 Aug 2020 09:58:47 PM UTC

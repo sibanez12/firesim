@@ -1,0 +1,91 @@
+Script started on Sun 09 Aug 2020 08:45:27 PM UTC
+Using link latency: 140
+Using switching latency: 0
+BW throttle set to 1/1
+High priority obuf size: 4375
+Low priority obuf size: 4375
+&&CSV&&QueueSize,0,0,0,0
+&&CSV&&QueueSize,0,1,0,0
+&&CSV&&QueueSize,0,2,0,0
+&&CSV&&QueueSize,0,3,0,0
+&&CSV&&QueueSize,0,4,0,0
+&&CSV&&QueueSize,0,5,0,0
+&&CSV&&QueueSize,0,6,0,0
+&&CSV&&QueueSize,0,7,0,0
+waiting for clients to connect
+SocketServerPort 0 accepted client
+waiting for clients to connect
+SocketServerPort 1 accepted client
+waiting for clients to connect
+SocketServerPort 2 accepted client
+waiting for clients to connect
+SocketServerPort 3 accepted client
+waiting for clients to connect
+SocketServerPort 4 accepted client
+waiting for clients to connect
+SocketServerPort 5 accepted client
+waiting for clients to connect
+SocketServerPort 6 accepted client
+waiting for clients to connect
+SocketServerPort 7 accepted client
+74177040: IP(src=10.0.0.3, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+74177040: IP(src=10.0.0.5, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+74177040: IP(src=10.0.0.8, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+74177040: IP(src=10.0.0.9, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+74177040: IP(src=10.0.0.7, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+&&CSV&&Events,Chopped,74177040,0
+74177040: IP(src=10.0.0.4, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+&&CSV&&Events,Chopped,74177040,0
+74177040: IP(src=10.0.0.6, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+&&CSV&&Events,Chopped,74177040,0
+&&CSV&&QueueSize,74177040,0,216,4352
+&&CSV&&QueueSize,74177180,0,0,4352
+&&CSV&&QueueSize,74177320,0,0,3264
+&&CSV&&QueueSize,74177460,0,0,2176
+74177621: IP(src=10.0.0.2, dst=10.0.0.7), LNIC(flags= NACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=5
+74177637: IP(src=10.0.0.2, dst=10.0.0.4), LNIC(flags= NACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=2
+74177653: IP(src=10.0.0.2, dst=10.0.0.6), LNIC(flags= NACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=4
+&&CSV&&QueueSize,74177600,0,0,1088
+&&CSV&&QueueSize,74177600,2,128,0
+&&CSV&&QueueSize,74177600,4,128,0
+&&CSV&&QueueSize,74177600,5,128,0
+74177744: IP(src=10.0.0.2, dst=10.0.0.4), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=2
+74177761: IP(src=10.0.0.2, dst=10.0.0.3), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=1
+&&CSV&&QueueSize,74177740,0,0,0
+&&CSV&&QueueSize,74177740,1,128,0
+&&CSV&&QueueSize,74177740,4,0,0
+&&CSV&&QueueSize,74177740,5,0,0
+74177880: IP(src=10.0.0.2, dst=10.0.0.6), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=4
+74177901: IP(src=10.0.0.2, dst=10.0.0.5), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=3
+74177990: IP(src=10.0.0.2, dst=10.0.0.3), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=1
+&&CSV&&QueueSize,74177880,2,0,0
+&&CSV&&QueueSize,74177880,3,128,0
+&&CSV&&QueueSize,74177880,4,128,0
+74178041: IP(src=10.0.0.2, dst=10.0.0.8), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=6
+74178113: IP(src=10.0.0.2, dst=10.0.0.5), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=3
+&&CSV&&QueueSize,74178020,1,0,0
+&&CSV&&QueueSize,74178020,4,0,0
+&&CSV&&QueueSize,74178020,6,128,0
+74178181: IP(src=10.0.0.2, dst=10.0.0.9), LNIC(flags= ACK, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=7
+74178236: IP(src=10.0.0.2, dst=10.0.0.8), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=6
+&&CSV&&QueueSize,74178160,3,0,0
+&&CSV&&QueueSize,74178160,7,128,0
+74178300: IP(src=10.0.0.7, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+74178359: IP(src=10.0.0.2, dst=10.0.0.9), LNIC(flags= PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=7
+&&CSV&&QueueSize,74178300,0,0,1088
+&&CSV&&QueueSize,74178300,6,0,0
+74178440: IP(src=10.0.0.4, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+&&CSV&&QueueSize,74178440,7,0,0
+74178580: IP(src=10.0.0.6, dst=10.0.0.2), LNIC(flags=DATA, msg_len=1024, src_context=0, dst_context=0), packet_len=1088, port=0
+&&CSV&&QueueSize,74178720,0,0,0
+74178881: IP(src=10.0.0.2, dst=10.0.0.7), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=5
+&&CSV&&QueueSize,74178860,5,128,0
+74179021: IP(src=10.0.0.2, dst=10.0.0.4), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=2
+&&CSV&&QueueSize,74179000,2,128,0
+&&CSV&&QueueSize,74179000,5,0,0
+74179161: IP(src=10.0.0.2, dst=10.0.0.6), LNIC(flags= ACK PULL, msg_len=1024, src_context=0, dst_context=0), packet_len=128, port=4
+&&CSV&&QueueSize,74179140,2,0,0
+&&CSV&&QueueSize,74179140,4,128,0
+&&CSV&&QueueSize,74179280,4,0,0
+^[[A^[[A^[[A^[[A
+Script done on Sun 09 Aug 2020 08:47:39 PM UTC
